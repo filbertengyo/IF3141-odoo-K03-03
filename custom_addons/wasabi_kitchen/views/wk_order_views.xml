@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <record id="wk_view_order_tree_active" model="ir.ui.view">
+    <field name="name">wk.pos.order.tree.active</field>
+    <field name="model">pos.order</field>
+    <field name="arch" type="xml">
+      <tree decoration-success="kds_status=='ready'"
+            decoration-info="kds_status=='cooking'"
+            decoration-warning="kds_status=='pending'">
+        <field name="name" string="No. Order"/>
+        <field name="table_id" string="Meja"/>
+        <field name="no_meja" string="No. Meja"/>
+        <field name="amount_total" string="Total" widget="monetary"/>
+        <field name="kds_status" string="Status KDS"
+               widget="badge"
+               options="{'color_map': {'pending': 'warning', 'cooking': 'info', 'ready': 'success'}}"/>
+        <field name="date_order" string="Waktu"/>
+        <field name="state" string="Status" invisible="1"/>
+        <button name="action_open_billing" type="object"
+                string="Billing" class="btn-sm btn-primary"
+                invisible="kds_status != 'ready'"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="wk_view_order_tree_history" model="ir.ui.view">
+    <field name="name">wk.pos.order.tree.history</field>
+    <field name="model">pos.order</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="name" string="No. Order"/>
+        <field name="no_meja" string="No. Meja"/>
+        <field name="table_id" string="Meja"/>
+        <field name="amount_total" string="Total" widget="monetary"/>
+        <field name="date_order" string="Waktu"/>
+        <field name="state" string="Status"
+               widget="badge"
+               options="{'color_map': {'paid': 'success', 'done': 'success', 'invoiced': 'info'}}"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="wk_search_order" model="ir.ui.view">
+    <field name="name">wk.pos.order.search</field>
+    <field name="model">pos.order</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="name" string="No. Order"/>
+        <field name="table_id" string="Meja"/>
+        <filter name="today" string="Hari ini"
+                domain="[('date_order','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+        <filter name="ready" string="Siap Dibayar"
+                domain="[('kds_status','=','ready')]"/>
+        <group expand="0" string="Group By">
+          <filter name="group_table" string="Meja"
+                  context="{'group_by':'table_id'}"/>
+          <filter name="group_date" string="Tanggal"
+                  context="{'group_by':'date_order:day'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="wk_action_order_aktif" model="ir.actions.act_window">
+    <field name="name">Daftar Pesanan</field>
+    <field name="res_model">pos.order</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('state','=','draft')]</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_order_tree_active')}),
+    ]"/>
+    <field name="search_view_id" ref="wk_search_order"/>
+  </record>
+
+  <record id="wk_action_order_ready" model="ir.actions.act_window">
+    <field name="name">Siap Dibayar</field>
+    <field name="res_model">pos.order</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('state','=','draft'),('kds_status','=','ready')]</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_order_tree_active')}),
+    ]"/>
+    <field name="search_view_id" ref="wk_search_order"/>
+  </record>
+
+  <record id="wk_action_order_history" model="ir.actions.act_window">
+    <field name="name">Riwayat Transaksi</field>
+    <field name="res_model">pos.order</field>
+    <field name="view_mode">tree</field>
+    <field name="domain">[('state','in',['paid','done','invoiced'])]</field>
+    <field name="context">{'search_default_today': 1}</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_order_tree_history')}),
+    ]"/>
+    <field name="search_view_id" ref="wk_search_order"/>
+  </record>
+
+</odoo>

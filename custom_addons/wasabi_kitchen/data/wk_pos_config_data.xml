@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data noupdate="1">
+
+    <record id="wk_pos_config" model="pos.config">
+      <field name="name">Wasabi Kitchen</field>
+      <field name="iface_orderline_notes" eval="True"/>
+    </record>
+
+    <record id="wk_floor_main" model="restaurant.floor">
+      <field name="name">Lantai Utama</field>
+      <field name="pos_config_ids" eval="[(4, ref('wk_pos_config'))]"/>
+    </record>
+
+    <record id="wk_table_1"  model="restaurant.table"><field name="name">Table 1</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_2"  model="restaurant.table"><field name="name">Table 2</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_3"  model="restaurant.table"><field name="name">Table 3</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_4"  model="restaurant.table"><field name="name">Table 4</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_5"  model="restaurant.table"><field name="name">Table 5</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_6"  model="restaurant.table"><field name="name">Table 6</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_7"  model="restaurant.table"><field name="name">Table 7</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_8"  model="restaurant.table"><field name="name">Table 8</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_9"  model="restaurant.table"><field name="name">Table 9</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+    <record id="wk_table_10" model="restaurant.table"><field name="name">Table 10</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
+
+  </data>
+</odoo>

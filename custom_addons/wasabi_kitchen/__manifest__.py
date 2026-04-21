@@ -1,0 +1,23 @@
+{
+    'name': 'Wasabi Kitchen — QR Ordering & KDS',
+    'version': '17.0.2.0.0',
+    'summary': 'Extension pos_restaurant untuk Wasabi Kitchen Jatinangor',
+    'author': 'Kelompok 03 - K03 IF3141',
+    'category': 'Point of Sale',
+    'sequence': -100,
+    'depends': ['point_of_sale', 'pos_restaurant', 'stock'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/wk_pos_config_data.xml',
+        'views/wk_kds_views.xml',
+        'views/wk_order_views.xml',
+        'views/wk_stock_views.xml',
+        'views/wk_report_views.xml',
+        'views/wk_menus.xml',
+    ],
+    'demo': ['demo/demo_menu_items.xml'],
+    'installable': True,
+    'application': True,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

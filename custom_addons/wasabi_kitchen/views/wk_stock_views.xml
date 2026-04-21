@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <record id="wk_view_product_stock_tree" model="ir.ui.view">
+    <field name="name">wk.product.template.stock.tree</field>
+    <field name="model">product.template</field>
+    <field name="arch" type="xml">
+      <tree editable="bottom"
+            decoration-danger="qty_available == 0"
+            decoration-warning="qty_available &lt; 3 and qty_available &gt; 0"
+            decoration-success="qty_available &gt;= 10">
+        <field name="name" string="Nama Menu" readonly="1"/>
+        <field name="categ_id" string="Kategori" readonly="1"/>
+        <field name="list_price" string="Harga (Rp)" readonly="1"/>
+        <field name="qty_available" string="Stok Tersedia"/>
+        <field name="uom_id" string="Satuan" readonly="1"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="wk_action_stock" model="ir.actions.act_window">
+    <field name="name">Koreksi Stok</field>
+    <field name="res_model">product.template</field>
+    <field name="view_mode">tree,form</field>
+    <field name="domain">[('available_in_pos','=',True),('type','in',['consu','product'])]</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_product_stock_tree')}),
+    ]"/>
+  </record>
+
+</odoo>

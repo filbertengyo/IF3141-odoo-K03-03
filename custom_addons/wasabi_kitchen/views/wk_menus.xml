@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <menuitem id="wk_root"
+            name="Wasabi Kitchen"
+            sequence="2"/>
+
+  <menuitem id="wk_qr_parent"      name="QR Ordering"      parent="wk_root" sequence="1"/>
+  <menuitem id="wk_kds_parent"     name="Kitchen Display"  parent="wk_root" sequence="2"/>
+  <menuitem id="wk_report_parent"  name="Pelaporan"         parent="wk_root" sequence="3"/>
+
+  <!-- QR Ordering -->
+  <menuitem id="wk_menu_daftar_pesanan" name="Daftar Pesanan"
+            parent="wk_qr_parent" action="wk_action_order_aktif" sequence="1"/>
+  <menuitem id="wk_menu_siap_bayar" name="Siap Dibayar"
+            parent="wk_qr_parent" action="wk_action_order_ready" sequence="2"/>
+
+  <!-- Kitchen Display -->
+  <menuitem id="wk_menu_antrian" name="Antrian Masak"
+            parent="wk_kds_parent" action="wk_action_kds" sequence="1"/>
+  <menuitem id="wk_menu_stok" name="Koreksi Stok"
+            parent="wk_kds_parent" action="wk_action_stock" sequence="2"/>
+
+  <!-- Pelaporan -->
+  <menuitem id="wk_menu_laporan" name="Laporan Transaksi"
+            parent="wk_report_parent" action="wk_action_report_wizard" sequence="1"/>
+  <menuitem id="wk_menu_riwayat" name="Riwayat Transaksi"
+            parent="wk_report_parent" action="wk_action_order_history" sequence="2"/>
+
+</odoo>

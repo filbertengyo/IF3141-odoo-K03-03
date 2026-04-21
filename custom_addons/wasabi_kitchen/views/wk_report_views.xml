@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <record id="wk_view_report_form" model="ir.ui.view">
+    <field name="name">wk.report.transaction.form</field>
+    <field name="model">wk.report.transaction</field>
+    <field name="arch" type="xml">
+      <form string="Laporan Transaksi Wasabi Kitchen">
+        <sheet>
+          <group>
+            <group string="Filter Tanggal">
+              <field name="date_start"/>
+              <field name="date_end"/>
+            </group>
+            <group string="Ringkasan" invisible="not has_result">
+              <field name="total_orders" readonly="1"/>
+              <field name="total_revenue" readonly="1" widget="monetary"
+                     options="{'currency_field': false}"/>
+            </group>
+          </group>
+          <div class="o_row mb-3">
+            <button name="action_query" type="object"
+                    string="Tampilkan Data" class="btn btn-primary me-2"/>
+            <button name="action_export_csv" type="object"
+                    string="Ekspor CSV" class="btn btn-secondary"
+                    invisible="not has_result"/>
+          </div>
+          <separator string="Hasil Transaksi" invisible="not has_result"/>
+          <field name="order_ids" readonly="1" invisible="not has_result">
+            <tree>
+              <field name="name" string="No. Order"/>
+              <field name="no_meja" string="No. Meja"/>
+              <field name="table_id" string="Meja"/>
+              <field name="amount_total" string="Total" widget="monetary"/>
+              <field name="date_order" string="Waktu"/>
+              <field name="state" string="Status"/>
+            </tree>
+          </field>
+          <field name="has_result" invisible="1"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="wk_action_report_wizard" model="ir.actions.act_window">
+    <field name="name">Laporan Transaksi</field>
+    <field name="res_model">wk.report.transaction</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'form', 'view_id': ref('wk_view_report_form')}),
+    ]"/>
+  </record>
+
+</odoo>

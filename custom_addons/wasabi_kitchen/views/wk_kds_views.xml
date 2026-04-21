@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <record id="wk_view_order_kanban" model="ir.ui.view">
+    <field name="name">wk.pos.order.kanban.kds</field>
+    <field name="model">pos.order</field>
+    <field name="arch" type="xml">
+      <kanban default_group_by="kds_status" class="o_kanban_small_column">
+        <field name="id"/>
+        <field name="table_id"/>
+        <field name="no_meja"/>
+        <field name="kds_status"/>
+        <field name="date_order"/>
+        <field name="amount_total"/>
+        <field name="lines"/>
+        <templates>
+          <t t-name="kanban-box">
+            <div t-attf-style="
+              border-left: 5px solid #{
+                record.kds_status.raw_value === 'pending'  ? '#f59e0b' :
+                record.kds_status.raw_value === 'cooking'  ? '#3b82f6' : '#10b981'
+              };
+              background: #fff;
+              border-radius: 6px;
+              margin: 4px;
+              padding: 10px 12px;
+              box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            ">
+              <!-- Header: Table name + time -->
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <strong style="font-size:15px;">
+                  <t t-esc="record.table_id.value || 'No Table'"/>
+                </strong>
+                <span style="font-size:11px; color:#6b7280;">
+                  <t t-esc="record.date_order.value"/>
+                </span>
+              </div>
+              <!-- Badge status -->
+              <div style="margin-bottom:8px;">
+                <span t-attf-style="
+                  display:inline-block;
+                  padding:2px 10px;
+                  border-radius:12px;
+                  font-size:11px;
+                  font-weight:600;
+                  color:#fff;
+                  background:#{
+                    record.kds_status.raw_value === 'pending'  ? '#f59e0b' :
+                    record.kds_status.raw_value === 'cooking'  ? '#3b82f6' : '#10b981'
+                  };
+                ">
+                  <t t-esc="record.kds_status.value"/>
+                </span>
+              </div>
+              <!-- Total -->
+              <div style="font-size:12px; color:#374151; margin-bottom:10px;">
+                Total: <strong>Rp <t t-esc="record.amount_total.value"/></strong>
+              </div>
+              <!-- Action buttons -->
+              <div>
+                <button t-if="record.kds_status.raw_value === 'pending'"
+                        class="btn btn-sm btn-warning"
+                        name="action_kds_mark_cooking" type="object"
+                        style="width:100%;">
+                  &#x1F373; Mulai Masak
+                </button>
+                <button t-if="record.kds_status.raw_value === 'cooking'"
+                        class="btn btn-sm btn-success"
+                        name="action_kds_mark_ready" type="object"
+                        style="width:100%;">
+                  &#x2705; Tandai READY
+                </button>
+                <span t-if="record.kds_status.raw_value === 'ready'"
+                      style="font-size:12px; color:#10b981; font-weight:600;">
+                  &#x1F7E2; Siap Disajikan
+                </span>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+  </record>
+
+  <record id="wk_view_order_tree_kds" model="ir.ui.view">
+    <field name="name">wk.pos.order.tree.kds</field>
+    <field name="model">pos.order</field>
+    <field name="arch" type="xml">
+      <tree decoration-warning="kds_status=='pending'"
+            decoration-info="kds_status=='cooking'"
+            decoration-success="kds_status=='ready'">
+        <field name="name" string="No. Order"/>
+        <field name="table_id" string="Meja"/>
+        <field name="no_meja" string="No. Meja"/>
+        <field name="kds_status" string="Status KDS"
+               widget="badge"
+               options="{'color_map': {'pending': 'warning', 'cooking': 'info', 'ready': 'success'}}"/>
+        <field name="amount_total" string="Total" widget="monetary"/>
+        <field name="date_order" string="Waktu"/>
+        <button name="action_kds_mark_cooking" type="object"
+                string="Mulai Masak" class="btn-sm btn-warning"
+                invisible="kds_status != 'pending'"/>
+        <button name="action_kds_mark_ready" type="object"
+                string="Tandai READY" class="btn-sm btn-success"
+                invisible="kds_status != 'cooking'"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="wk_search_kds" model="ir.ui.view">
+    <field name="name">wk.pos.order.search.kds</field>
+    <field name="model">pos.order</field>
+    <field name="arch" type="xml">
+      <search>
+        <field name="table_id" string="Meja"/>
+        <filter name="pending" string="Pending"
+                domain="[('kds_status','=','pending')]"/>
+        <filter name="cooking" string="Sedang Dimasak"
+                domain="[('kds_status','=','cooking')]"/>
+        <filter name="ready" string="Siap Antar"
+                domain="[('kds_status','=','ready')]"/>
+        <group expand="0" string="Group By">
+          <filter name="group_kds" string="Status KDS"
+                  context="{'group_by':'kds_status'}"/>
+          <filter name="group_table" string="Meja"
+                  context="{'group_by':'table_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="wk_action_kds" model="ir.actions.act_window">
+    <field name="name">Antrian Masak</field>
+    <field name="res_model">pos.order</field>
+    <field name="view_mode">kanban,tree</field>
+    <field name="domain">[('state','=','draft'),('table_id','!=',False)]</field>
+    <field name="context">{'search_default_group_kds': 1}</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'kanban', 'view_id': ref('wk_view_order_kanban')}),
+      (0, 0, {'view_mode': 'tree',   'view_id': ref('wk_view_order_tree_kds')}),
+    ]"/>
+    <field name="search_view_id" ref="wk_search_kds"/>
+  </record>
+
+</odoo>

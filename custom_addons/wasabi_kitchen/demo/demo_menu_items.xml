@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+    <record id="wk_cat_makanan" model="pos.category">
+      <field name="name">Makanan Utama</field>
+    </record>
+    <record id="wk_cat_snack" model="pos.category">
+      <field name="name">Snack &amp; Appetizer</field>
+    </record>
+    <record id="wk_cat_minuman" model="pos.category">
+      <field name="name">Minuman</field>
+    </record>
+
+    <record id="wk_prod_ramen" model="product.template">
+      <field name="name">Ramen Tonkotsu</field>
+      <field name="list_price">45000</field>
+      <field name="available_in_pos" eval="True"/>
+      <field name="type">consu</field>
+      <field name="pos_categ_ids" eval="[(4, ref('wk_cat_makanan'))]"/>
+    </record>
+    <record id="wk_prod_katsu" model="product.template">
+      <field name="name">Chicken Katsu</field>
+      <field name="list_price">38000</field>
+      <field name="available_in_pos" eval="True"/>
+      <field name="type">consu</field>
+      <field name="pos_categ_ids" eval="[(4, ref('wk_cat_makanan'))]"/>
+    </record>
+    <record id="wk_prod_sushi" model="product.template">
+      <field name="name">Sushi Set (8 pcs)</field>
+      <field name="list_price">55000</field>
+      <field name="available_in_pos" eval="True"/>
+      <field name="type">consu</field>
+      <field name="pos_categ_ids" eval="[(4, ref('wk_cat_makanan'))]"/>
+    </record>
+    <record id="wk_prod_salmon" model="product.template">
+      <field name="name">Salmon Sashimi</field>
+      <field name="list_price">65000</field>
+      <field name="available_in_pos" eval="True"/>
+      <field name="type">consu</field>
+      <field name="pos_categ_ids" eval="[(4, ref('wk_cat_makanan'))]"/>
+    </record>
+    <record id="wk_prod_udon" model="product.template">
+      <field name="name">Udon Goreng</field>
+      <field name="list_price">35000</field>
+      <field name="available_in_pos" eval="True"/>
+      <field name="type">consu</field>
+      <field name="pos_categ_ids" eval="[(4, ref('wk_cat_makanan'))]"/>
+    </record>
+    <record id="wk_prod_miso" model="product.template">
+      <field name="name">Miso Soup</field>
+      <field name="list_price">18000</field>
+      <field name="available_in_pos" eval="True"/>
+      <field name="type">consu</field>
+      <field name="pos_categ_ids" eval="[(4, ref('wk_cat_snack'))]"/>
+    </record>
+    <record id="wk_prod_takoyaki" model="product.template">
+      <field name="name">Takoyaki (6 pcs)</field>
+      <field name="list_price">22000</field>
+      <field name="available_in_pos" eval="True"/>
+      <field name="type">consu</field>
+      <field name="pos_categ_ids" eval="[(4, ref('wk_cat_snack'))]"/>
+    </record>
+    <record id="wk_prod_greentea" model="product.template">
+      <field name="name">Green Tea</field>
+      <field name="list_price">15000</field>
+      <field name="available_in_pos" eval="True"/>
+      <field name="type">consu</field>
+      <field name="pos_categ_ids" eval="[(4, ref('wk_cat_minuman'))]"/>
+    </record>
+
+  </data>
+</odoo>

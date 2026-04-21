@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+wk_report_all,WK Report Transaction,model_wk_report_transaction,,1,1,1,1
+wk_pos_order_all,WK POS Order,point_of_sale.model_pos_order,,1,1,1,0
+wk_pos_order_line_all,WK POS Order Line,point_of_sale.model_pos_order_line,,1,1,1,0
+wk_pos_session_read,WK POS Session Read,point_of_sale.model_pos_session,,1,0,0,0
+wk_pos_payment_read,WK POS Payment Read,point_of_sale.model_pos_payment,,1,0,0,0
+wk_pos_payment_method_read,WK POS Payment Method Read,point_of_sale.model_pos_payment_method,,1,0,0,0
+wk_restaurant_floor_read,WK Restaurant Floor Read,pos_restaurant.model_restaurant_floor,,1,0,0,0
+wk_restaurant_table_read,WK Restaurant Table Read,pos_restaurant.model_restaurant_table,,1,0,0,0
+wk_stock_move_read,WK Stock Move Read,stock.model_stock_move,,1,0,0,0
+wk_stock_quant_read,WK Stock Quant Read,stock.model_stock_quant,,1,0,0,0
+wk_stock_lot_read,WK Stock Lot Read,stock.model_stock_lot,,1,0,0,0
+wk_stock_location_read,WK Stock Location Read,stock.model_stock_location,,1,0,0,0
