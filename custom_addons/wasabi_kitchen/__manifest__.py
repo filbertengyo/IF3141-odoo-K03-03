@@ -1,6 +1,7 @@
 {
     'name': 'Wasabi Kitchen — QR Ordering & KDS',
-    'version': '17.0.2.0.0',
+    'version': '17.0.3.0.0',
+    'post_init_hook': 'post_init_hook',
     'summary': 'Extension pos_restaurant untuk Wasabi Kitchen Jatinangor',
     'author': 'Kelompok 03 - K03 IF3141',
     'category': 'Point of Sale',

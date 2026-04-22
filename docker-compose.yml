@@ -17,7 +17,7 @@ services:
       --db_port=5432 
       --db_user=odoo 
       --db_password=password 
-      -i base
+      -i wasabi_kitchen
       --load-language=en_US
       --without-demo=all
 
