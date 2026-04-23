@@ -15,6 +15,16 @@ class WKRestaurantTable(models.Model):
         compute='_compute_active_orders',
     )
 
+    qr_url = fields.Char(
+        string='Self-Order URL',
+        compute='_compute_qr_url',
+    )
+
+    @api.depends('id')
+    def _compute_qr_url(self):
+        for rec in self:
+            rec.qr_url = f'/pos/self-order?table_id={rec.id}' if rec.id else ''
+
     @api.depends('name')
     def _compute_nomor_meja(self):
         for rec in self:

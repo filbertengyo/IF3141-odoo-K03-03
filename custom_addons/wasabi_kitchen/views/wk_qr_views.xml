@@ -34,11 +34,7 @@
             <field name="active_orders_count" string="Order Aktif" readonly="1"/>
           </group>
           <group string="QR Code untuk Pelanggan">
-            <field name="id" string="ID Meja" readonly="1"/>
-            <div colspan="2" style="background:#f3f4f6; padding:12px; border-radius:6px;
-                                     font-family:monospace; font-size:13px; color:#374151;">
-              URL: /pos/self-order?table_id=[ID Meja di atas]
-            </div>
+            <field name="qr_url" string="Self-Order URL" readonly="1"/>
             <div colspan="2" style="font-size:12px; color:#888; margin-top:6px;">
               Cetak atau tampilkan URL ini sebagai QR Code menggunakan tools eksternal.
             </div>
