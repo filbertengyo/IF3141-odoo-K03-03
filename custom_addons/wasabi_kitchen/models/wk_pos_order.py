@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import models, fields, api
 
 
 class WKPosOrder(models.Model):
@@ -8,7 +8,7 @@ class WKPosOrder(models.Model):
         ('pending', 'Pending'),
         ('cooking', 'Cooking'),
         ('ready',   'Ready'),
-    ], string='Status KDS', default='pending', index=True)
+    ], string='Status KDS', default='pending', index=True, copy=False)
 
     no_meja = fields.Integer(
         string='No. Meja',
@@ -26,19 +26,26 @@ class WKPosOrder(models.Model):
                 rec.no_meja = 0
 
     def action_kds_mark_cooking(self):
-        self.write({'kds_status': 'cooking'})
+        for rec in self:
+            rec.kds_status = 'cooking'
         return True
 
     def action_kds_mark_ready(self):
-        self.write({'kds_status': 'ready'})
+        for rec in self:
+            rec.kds_status = 'ready'
         return True
 
     def action_open_billing(self):
-        config_id = self.session_id.config_id.id if self.session_id else False
-        if config_id:
-            return {
-                'type': 'ir.actions.act_url',
-                'url': f'/pos/ui?config_id={config_id}',
-                'target': 'new',
-            }
-        return True
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Billing — {self.table_id.name or self.name}',
+            'res_model': 'wk.billing.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_order_id': self.id,
+                'default_table_name': self.table_id.name if self.table_id else '',
+                'default_amount_total': self.amount_total,
+            },
+        }

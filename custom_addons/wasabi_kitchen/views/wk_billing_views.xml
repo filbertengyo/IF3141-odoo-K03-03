@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- ═══ UC-10: BUKA BILLING — list order yang siap dibayar ═══ -->
+  <record id="wk_view_billing_list" model="ir.ui.view">
+    <field name="name">wk.pos.order.tree.billing</field>
+    <field name="model">pos.order</field>
+    <field name="priority">16</field>
+    <field name="arch" type="xml">
+      <tree string="Buka Billing"
+            decoration-success="kds_status == 'ready'"
+            decoration-info="kds_status == 'cooking'"
+            decoration-warning="kds_status == 'pending'">
+        <field name="name" string="No. Order"/>
+        <field name="table_id" string="Meja"/>
+        <field name="no_meja" string="No. Meja"/>
+        <field name="amount_total" string="Total Tagihan" widget="monetary"/>
+        <field name="kds_status" string="Status"
+               widget="badge"
+               options="{'color_map': {'pending': 'warning', 'cooking': 'info', 'ready': 'success'}}"/>
+        <field name="date_order" string="Waktu"/>
+        <field name="state" invisible="1"/>
+        <button name="action_open_billing" type="object"
+                string="Buka Billing" icon="fa-money"
+                class="btn-sm btn-primary"
+                invisible="kds_status != 'ready'"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="wk_action_billing_list" model="ir.actions.act_window">
+    <field name="name">Buka Billing</field>
+    <field name="res_model">pos.order</field>
+    <field name="view_mode">tree</field>
+    <field name="domain">[('state', '=', 'draft')]</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_billing_list')}),
+    ]"/>
+  </record>
+
+  <!-- ═══ UC-07: KONFIRMASI PEMBAYARAN — wizard billing ═══ -->
+  <record id="wk_view_billing_form" model="ir.ui.view">
+    <field name="name">wk.billing.wizard.form</field>
+    <field name="model">wk.billing.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Konfirmasi Pembayaran">
+        <sheet>
+          <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px;
+                      padding:12px 16px; margin-bottom:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <span style="font-size:13px; color:#555;">Meja: </span>
+                <strong style="font-size:16px;">
+                  <field name="table_name" readonly="1" nolabel="1"/>
+                </strong>
+              </div>
+              <div>
+                <span style="font-size:13px; color:#555;">Order: </span>
+                <field name="order_id" readonly="1" nolabel="1"/>
+              </div>
+              <div>
+                <field name="kds_status" widget="badge"
+                       options="{'color_map': {'pending': 'warning', 'cooking': 'info', 'ready': 'success'}}"
+                       readonly="1" nolabel="1"/>
+              </div>
+            </div>
+          </div>
+
+          <separator string="Detail Pesanan"/>
+          <field name="order_line_ids" readonly="1" nolabel="1">
+            <tree>
+              <field name="product_id" string="Menu"/>
+              <field name="qty" string="Jumlah"/>
+              <field name="price_unit" string="Harga Satuan" widget="monetary"/>
+              <field name="price_subtotal" string="Subtotal" widget="monetary"/>
+              <field name="catatan" string="Catatan" optional="show"/>
+            </tree>
+          </field>
+
+          <separator string="Pembayaran"/>
+          <group>
+            <group>
+              <field name="amount_total" string="Total Tagihan"
+                     widget="monetary" readonly="1"/>
+              <field name="payment_method" string="Metode Pembayaran"
+                     widget="radio"/>
+            </group>
+            <group>
+              <field name="amount_paid" string="Jumlah Dibayar"
+                     invisible="payment_method != 'cash'"/>
+              <field name="change_amount" string="Kembalian"
+                     readonly="1" widget="monetary"
+                     invisible="payment_method != 'cash'"/>
+            </group>
+          </group>
+
+          <div invisible="state != 'confirmed'"
+               style="background:#f0fdf4; border:1px solid #86efac; border-radius:6px;
+                      padding:12px; text-align:center; margin-top:12px;">
+            <span style="color:#166534; font-weight:500; font-size:14px;">
+              &#x2713; Pembayaran Berhasil Dikonfirmasi
+            </span>
+          </div>
+
+          <field name="state" invisible="1"/>
+        </sheet>
+        <footer>
+          <button name="action_confirm_payment" type="object"
+                  string="Konfirmasi Pembayaran"
+                  class="btn btn-primary"
+                  invisible="state == 'confirmed'"/>
+          <button string="Tutup" class="btn btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="wk_action_konfirmasi" model="ir.actions.act_window">
+    <field name="name">Konfirmasi Pembayaran</field>
+    <field name="res_model">pos.order</field>
+    <field name="view_mode">tree</field>
+    <field name="domain">[('state', '=', 'draft'), ('kds_status', '=', 'ready')]</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_billing_list')}),
+    ]"/>
+  </record>
+
+</odoo>

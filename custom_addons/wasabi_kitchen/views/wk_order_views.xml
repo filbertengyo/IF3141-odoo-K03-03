@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-  <record id="wk_view_order_tree_active" model="ir.ui.view">
-    <field name="name">wk.pos.order.tree.active</field>
+  <!-- ═══ UC-04: LIST PESANAN AKTIF + UC-10: TRIGGER BILLING ═══ -->
+  <record id="wk_view_order_tree" model="ir.ui.view">
+    <field name="name">wk.pos.order.tree.ordering</field>
     <field name="model">pos.order</field>
+    <field name="priority">16</field>
     <field name="arch" type="xml">
-      <tree decoration-success="kds_status=='ready'"
-            decoration-info="kds_status=='cooking'"
-            decoration-warning="kds_status=='pending'">
+      <tree string="Daftar Pesanan"
+            decoration-warning="kds_status == 'pending'"
+            decoration-info="kds_status == 'cooking'"
+            decoration-success="kds_status == 'ready'">
         <field name="name" string="No. Order"/>
         <field name="table_id" string="Meja"/>
-        <field name="no_meja" string="No. Meja"/>
+        <field name="no_meja" string="No. Meja" optional="show"/>
         <field name="amount_total" string="Total" widget="monetary"/>
-        <field name="kds_status" string="Status KDS"
+        <field name="kds_status" string="Status"
                widget="badge"
                options="{'color_map': {'pending': 'warning', 'cooking': 'info', 'ready': 'success'}}"/>
         <field name="date_order" string="Waktu"/>
-        <field name="state" string="Status" invisible="1"/>
+        <field name="state" string="POS State" optional="hide" invisible="1"/>
         <button name="action_open_billing" type="object"
-                string="Billing" class="btn-sm btn-primary"
+                string="Buka Billing" icon="fa-money"
+                class="btn-sm btn-primary"
                 invisible="kds_status != 'ready'"/>
       </tree>
     </field>
@@ -27,8 +31,9 @@
   <record id="wk_view_order_tree_history" model="ir.ui.view">
     <field name="name">wk.pos.order.tree.history</field>
     <field name="model">pos.order</field>
+    <field name="priority">16</field>
     <field name="arch" type="xml">
-      <tree>
+      <tree string="Riwayat Transaksi">
         <field name="name" string="No. Order"/>
         <field name="no_meja" string="No. Meja"/>
         <field name="table_id" string="Meja"/>
@@ -42,21 +47,30 @@
   </record>
 
   <record id="wk_search_order" model="ir.ui.view">
-    <field name="name">wk.pos.order.search</field>
+    <field name="name">wk.pos.order.search.order</field>
     <field name="model">pos.order</field>
+    <field name="priority">16</field>
     <field name="arch" type="xml">
-      <search>
+      <search string="Cari Pesanan">
         <field name="name" string="No. Order"/>
         <field name="table_id" string="Meja"/>
-        <filter name="today" string="Hari ini"
-                domain="[('date_order','&gt;=', datetime.datetime.combine(context_today(), datetime.time(0,0,0)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
-        <filter name="ready" string="Siap Dibayar"
-                domain="[('kds_status','=','ready')]"/>
-        <group expand="0" string="Group By">
-          <filter name="group_table" string="Meja"
-                  context="{'group_by':'table_id'}"/>
-          <filter name="group_date" string="Tanggal"
-                  context="{'group_by':'date_order:day'}"/>
+        <filter name="f_today" string="Hari Ini"
+                domain="[('date_order', '&gt;=',
+                  datetime.datetime.combine(context_today(),
+                  datetime.time(0, 0, 0)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+        <filter name="f_pending" string="Pending"
+                domain="[('kds_status', '=', 'pending')]"/>
+        <filter name="f_cooking" string="Sedang Dimasak"
+                domain="[('kds_status', '=', 'cooking')]"/>
+        <filter name="f_ready" string="Siap Dibayar"
+                domain="[('kds_status', '=', 'ready')]"/>
+        <group expand="0" string="Kelompokkan">
+          <filter name="g_meja" string="Meja"
+                  context="{'group_by': 'table_id'}"/>
+          <filter name="g_status" string="Status KDS"
+                  context="{'group_by': 'kds_status'}"/>
+          <filter name="g_date" string="Tanggal"
+                  context="{'group_by': 'date_order:day'}"/>
         </group>
       </search>
     </field>
@@ -66,22 +80,11 @@
     <field name="name">Daftar Pesanan</field>
     <field name="res_model">pos.order</field>
     <field name="view_mode">tree,form</field>
-    <field name="domain">[('state','=','draft')]</field>
+    <field name="domain">[('state', '=', 'draft')]</field>
+    <field name="context">{'search_default_f_today': 1}</field>
     <field name="view_ids" eval="[
       (5, 0, 0),
-      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_order_tree_active')}),
-    ]"/>
-    <field name="search_view_id" ref="wk_search_order"/>
-  </record>
-
-  <record id="wk_action_order_ready" model="ir.actions.act_window">
-    <field name="name">Siap Dibayar</field>
-    <field name="res_model">pos.order</field>
-    <field name="view_mode">tree,form</field>
-    <field name="domain">[('state','=','draft'),('kds_status','=','ready')]</field>
-    <field name="view_ids" eval="[
-      (5, 0, 0),
-      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_order_tree_active')}),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_order_tree')}),
     ]"/>
     <field name="search_view_id" ref="wk_search_order"/>
   </record>
@@ -90,8 +93,8 @@
     <field name="name">Riwayat Transaksi</field>
     <field name="res_model">pos.order</field>
     <field name="view_mode">tree</field>
-    <field name="domain">[('state','in',['paid','done','invoiced'])]</field>
-    <field name="context">{'search_default_today': 1}</field>
+    <field name="domain">[('state', 'in', ['paid', 'done', 'invoiced'])]</field>
+    <field name="context">{'search_default_f_today': 1}</field>
     <field name="view_ids" eval="[
       (5, 0, 0),
       (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_order_tree_history')}),

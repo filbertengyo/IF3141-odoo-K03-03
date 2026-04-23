@@ -34,6 +34,17 @@ def post_init_hook(env):
                 'name': tname, 'floor_id': wk_floor.id,
                 'seats': 4, 'shape': 'square',
             })
+
+    valid_names = {f'Table {i}' for i in range(1, 11)}
+    orphan_tables = env['restaurant.table'].search([
+        ('floor_id', '=', wk_floor.id),
+        ('name', 'not in', list(valid_names)),
+    ])
+    for t in orphan_tables:
+        try:
+            t.unlink()
+        except Exception as e:
+            _logger.warning("Cannot delete orphan table '%s': %s", t.name, e)
     _logger.info("Tables ready on floor '%s'", wk_floor.name)
 
     # ── 3. POS Categories ────────────────────────────────────────────────────
@@ -50,7 +61,7 @@ def post_init_hook(env):
         ('Ramen Tonkotsu',   45000, cat_makanan, 10),
         ('Chicken Katsu',    38000, cat_makanan,  8),
         ('Sushi Set (8 pcs)',55000, cat_makanan,  6),
-        ('Salmon Sashimi',   65000, cat_makanan,  4),
+        ('Salmon Sashimi',   65000, cat_makanan,  2),   # stock menipis → warning UC-06
         ('Udon Goreng',      35000, cat_makanan, 12),
         ('Miso Soup',        18000, cat_snack,   20),
         ('Takoyaki (6 pcs)', 22000, cat_snack,   15),
@@ -150,6 +161,18 @@ def post_init_hook(env):
         table = get_table(table_name)
         if not table or not cash_method:
             return
+        order_date = datetime.now() - timedelta(days=days_ago, hours=2)
+        date_start = order_date.replace(hour=0, minute=0, second=0)
+        date_end   = order_date.replace(hour=23, minute=59, second=59)
+        existing = env['pos.order'].search([
+            ('table_id', '=', table.id),
+            ('state', '=', 'paid'),
+            ('date_order', '>=', date_start),
+            ('date_order', '<=', date_end),
+        ], limit=1)
+        if existing:
+            _logger.info("Paid order at %s (%dd ago) already exists, skip", table_name, days_ago)
+            return existing
         order_lines = []
         total = 0
         for pname, qty, note in lines:
@@ -164,7 +187,6 @@ def post_init_hook(env):
                 'price_subtotal': subtotal, 'price_subtotal_incl': subtotal,
                 'discount': 0.0, 'catatan': note,
             }))
-        order_date = datetime.now() - timedelta(days=days_ago, hours=2)
         order = env['pos.order'].create({
             'session_id': session.id, 'table_id': table.id,
             'lines': order_lines, 'kds_status': 'ready', 'state': 'draft',

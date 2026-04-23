@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-  <menuitem id="wk_root"
-            name="Wasabi Kitchen"
-            sequence="2"/>
+  <menuitem id="wk_root" name="Wasabi Kitchen" sequence="2"/>
 
-  <menuitem id="wk_qr_parent"      name="QR Ordering"      parent="wk_root" sequence="1"/>
-  <menuitem id="wk_kds_parent"     name="Kitchen Display"  parent="wk_root" sequence="2"/>
-  <menuitem id="wk_report_parent"  name="Pelaporan"         parent="wk_root" sequence="3"/>
+  <!-- ── QR Ordering (UC-02, UC-03, UC-04) ── -->
+  <menuitem id="wk_qr_parent" name="QR Ordering"
+            parent="wk_root" sequence="1"/>
+  <menuitem id="wk_menu_scan_qr" name="Scan QR Code"
+            parent="wk_qr_parent" action="wk_action_scan_qr" sequence="1"/>
+  <menuitem id="wk_menu_browse" name="Daftar Menu"
+            parent="wk_qr_parent" action="wk_action_browse_menu" sequence="2"/>
+  <menuitem id="wk_menu_new_order" name="Buat Pesanan Baru"
+            parent="wk_qr_parent" action="wk_action_create_order" sequence="3"/>
 
-  <!-- QR Ordering -->
-  <menuitem id="wk_menu_daftar_pesanan" name="Daftar Pesanan"
-            parent="wk_qr_parent" action="wk_action_order_aktif" sequence="1"/>
-  <menuitem id="wk_menu_siap_bayar" name="Siap Dibayar"
-            parent="wk_qr_parent" action="wk_action_order_ready" sequence="2"/>
-
-  <!-- Kitchen Display -->
+  <!-- ── Kitchen Display (UC-05, UC-06, UC-09) ── -->
+  <menuitem id="wk_kds_parent" name="Kitchen Display"
+            parent="wk_root" sequence="2"/>
   <menuitem id="wk_menu_antrian" name="Antrian Masak"
             parent="wk_kds_parent" action="wk_action_kds" sequence="1"/>
   <menuitem id="wk_menu_stok" name="Koreksi Stok"
             parent="wk_kds_parent" action="wk_action_stock" sequence="2"/>
 
-  <!-- Pelaporan -->
+  <!-- ── Kasir (UC-07, UC-10) ── -->
+  <menuitem id="wk_kasir_parent" name="Kasir"
+            parent="wk_root" sequence="3"/>
+  <menuitem id="wk_menu_billing" name="Buka Billing"
+            parent="wk_kasir_parent" action="wk_action_billing_list" sequence="1"/>
+  <menuitem id="wk_menu_konfirmasi" name="Konfirmasi Pembayaran"
+            parent="wk_kasir_parent" action="wk_action_konfirmasi" sequence="2"/>
+  <menuitem id="wk_menu_riwayat" name="Riwayat Transaksi"
+            parent="wk_kasir_parent" action="wk_action_order_history" sequence="3"/>
+
+  <!-- ── Pelaporan (UC-01, UC-08) ── -->
+  <menuitem id="wk_report_parent" name="Pelaporan"
+            parent="wk_root" sequence="4"/>
   <menuitem id="wk_menu_laporan" name="Laporan Transaksi"
             parent="wk_report_parent" action="wk_action_report_wizard" sequence="1"/>
-  <menuitem id="wk_menu_riwayat" name="Riwayat Transaksi"
-            parent="wk_report_parent" action="wk_action_order_history" sequence="2"/>
 
 </odoo>

@@ -1,4 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+wk_order_wizard_all,WK Order Wizard,model_wk_order_wizard,,1,1,1,1
+wk_order_wizard_line_all,WK Order Wizard Line,model_wk_order_wizard_line,,1,1,1,1
+wk_billing_wizard_all,WK Billing Wizard,model_wk_billing_wizard,,1,1,1,1
 wk_report_all,WK Report Transaction,model_wk_report_transaction,,1,1,1,1
 wk_pos_order_all,WK POS Order,point_of_sale.model_pos_order,,1,1,1,0
 wk_pos_order_line_all,WK POS Order Line,point_of_sale.model_pos_order_line,,1,1,1,0

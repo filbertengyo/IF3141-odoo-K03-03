@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+  <!-- ═══ UC-02: SCAN QR CODE — daftar meja + info QR ═══ -->
+  <record id="wk_view_qr_tree" model="ir.ui.view">
+    <field name="name">wk.restaurant.table.tree.qr</field>
+    <field name="model">restaurant.table</field>
+    <field name="priority">16</field>
+    <field name="arch" type="xml">
+      <tree string="Scan QR Code — Daftar Meja"
+            decoration-success="active_orders_count == 0"
+            decoration-warning="active_orders_count &gt; 0"
+            create="false" delete="false">
+        <field name="name" string="Nama Meja"/>
+        <field name="seats" string="Kapasitas"/>
+        <field name="active_orders_count" string="Order Aktif"/>
+        <button name="action_open_qr_info" type="object"
+                string="Lihat QR" icon="fa-qrcode"
+                class="btn-sm btn-primary"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="wk_view_qr_form" model="ir.ui.view">
+    <field name="name">wk.restaurant.table.form.qr</field>
+    <field name="model">restaurant.table</field>
+    <field name="priority">16</field>
+    <field name="arch" type="xml">
+      <form string="Informasi QR Code Meja">
+        <sheet>
+          <group string="Informasi Meja">
+            <field name="name" string="Nama Meja" readonly="1"/>
+            <field name="seats" string="Kapasitas" readonly="1"/>
+            <field name="active_orders_count" string="Order Aktif" readonly="1"/>
+          </group>
+          <group string="QR Code untuk Pelanggan">
+            <field name="id" string="ID Meja" readonly="1"/>
+            <div colspan="2" style="background:#f3f4f6; padding:12px; border-radius:6px;
+                                     font-family:monospace; font-size:13px; color:#374151;">
+              URL: /pos/self-order?table_id=[ID Meja di atas]
+            </div>
+            <div colspan="2" style="font-size:12px; color:#888; margin-top:6px;">
+              Cetak atau tampilkan URL ini sebagai QR Code menggunakan tools eksternal.
+            </div>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="wk_action_scan_qr" model="ir.actions.act_window">
+    <field name="name">Scan QR Code</field>
+    <field name="res_model">restaurant.table</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_qr_tree')}),
+      (0, 0, {'view_mode': 'form', 'view_id': ref('wk_view_qr_form')}),
+    ]"/>
+  </record>
+
+  <!-- ═══ UC-03: BROWSE MENU — daftar produk POS ═══ -->
+  <record id="wk_view_browse_menu_tree" model="ir.ui.view">
+    <field name="name">wk.product.template.tree.browse</field>
+    <field name="model">product.template</field>
+    <field name="priority">16</field>
+    <field name="arch" type="xml">
+      <tree string="Daftar Menu"
+            decoration-danger="qty_available == 0"
+            decoration-warning="qty_available &gt; 0 and qty_available &lt; 4"
+            decoration-success="qty_available &gt;= 4"
+            create="false" delete="false" edit="false">
+        <field name="name" string="Nama Menu"/>
+        <field name="categ_id" string="Kategori"/>
+        <field name="list_price" string="Harga (Rp)" widget="monetary"/>
+        <field name="qty_available" string="Stok"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="wk_search_browse_menu" model="ir.ui.view">
+    <field name="name">wk.product.template.search.browse</field>
+    <field name="model">product.template</field>
+    <field name="priority">16</field>
+    <field name="arch" type="xml">
+      <search string="Cari Menu">
+        <field name="name" string="Nama Menu"/>
+        <field name="categ_id" string="Kategori"/>
+        <filter name="f_tersedia" string="Tersedia"
+                domain="[('qty_available', '&gt;', 0)]"/>
+        <filter name="f_habis" string="Stok Habis"
+                domain="[('qty_available', '=', 0)]"/>
+        <group expand="0" string="Kelompokkan">
+          <filter name="g_cat" string="Kategori"
+                  context="{'group_by': 'categ_id'}"/>
+        </group>
+      </search>
+    </field>
+  </record>
+
+  <record id="wk_action_browse_menu" model="ir.actions.act_window">
+    <field name="name">Daftar Menu</field>
+    <field name="res_model">product.template</field>
+    <field name="view_mode">tree</field>
+    <field name="domain">[('available_in_pos', '=', True)]</field>
+    <field name="context">{'search_default_f_tersedia': 1}</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'tree', 'view_id': ref('wk_view_browse_menu_tree')}),
+    ]"/>
+    <field name="search_view_id" ref="wk_search_browse_menu"/>
+  </record>
+
+  <!-- ═══ UC-04: MEMBUAT PESANAN — wizard ═══ -->
+  <record id="wk_view_order_wizard_form" model="ir.ui.view">
+    <field name="name">wk.order.wizard.form</field>
+    <field name="model">wk.order.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Buat Pesanan Baru">
+        <sheet>
+          <group string="Informasi Meja">
+            <field name="table_id" string="Nomor Meja"/>
+          </group>
+          <separator string="Item Pesanan"/>
+          <field name="line_ids">
+            <tree editable="bottom" string="Item Pesanan">
+              <field name="product_id" string="Menu"
+                     domain="[('available_in_pos','=',True)]"/>
+              <field name="qty" string="Jumlah"/>
+              <field name="price_unit" string="Harga (Rp)"/>
+              <field name="catatan" string="Catatan"/>
+              <field name="subtotal" string="Subtotal (Rp)" readonly="1"/>
+            </tree>
+          </field>
+          <group>
+            <field name="amount_total" string="Total (Rp)" readonly="1"/>
+          </group>
+        </sheet>
+        <footer>
+          <button name="action_confirm" type="object"
+                  string="Buat Pesanan" class="btn-primary"/>
+          <button string="Batal" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="wk_action_create_order" model="ir.actions.act_window">
+    <field name="name">Buat Pesanan Baru</field>
+    <field name="res_model">wk.order.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+    <field name="view_ids" eval="[
+      (5, 0, 0),
+      (0, 0, {'view_mode': 'form', 'view_id': ref('wk_view_order_wizard_form')}),
+    ]"/>
+  </record>
+
+</odoo>
