@@ -57,7 +57,27 @@ class WKBillingWizard(models.TransientModel):
                 f'Jumlah bayar (Rp {int(self.amount_paid):,}) '
                 f'kurang dari total tagihan (Rp {int(self.amount_total):,}).'
             )
-        self.order_id.write({'kds_status': 'ready'})
+
+        order = self.order_id
+        session = order.session_id
+
+        is_cash = self.payment_method == 'cash'
+        pm = self.env['pos.payment.method'].search([
+            ('is_cash_count', '=', is_cash),
+            ('config_ids', 'in', [session.config_id.id]),
+        ], limit=1)
+        if not pm:
+            pm = self.env['pos.payment.method'].search(
+                [('config_ids', 'in', [session.config_id.id])], limit=1)
+        if not pm:
+            raise UserError('Metode pembayaran tidak ditemukan pada sesi POS aktif.')
+
+        self.env['pos.payment'].create({
+            'pos_order_id': order.id,
+            'payment_method_id': pm.id,
+            'amount': order.amount_total,
+        })
+        order.write({'state': 'paid'})
         self.write({'state': 'confirmed'})
         return {
             'type': 'ir.actions.act_window',

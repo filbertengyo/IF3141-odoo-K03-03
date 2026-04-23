@@ -21,6 +21,7 @@ class WKRestaurantTable(models.Model):
             digits = ''.join(filter(str.isdigit, rec.name or ''))
             rec.nomor_meja = int(digits) if digits else 0
 
+    @api.depends('pos_order_ids.state')
     def _compute_active_orders(self):
         for rec in self:
             rec.active_orders_count = self.env['pos.order'].search_count([
