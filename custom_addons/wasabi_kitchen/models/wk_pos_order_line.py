@@ -10,14 +10,22 @@ class WKPosOrderLine(models.Model):
     @api.constrains('qty', 'product_id')
     def _check_stock_availability(self):
         for line in self:
-            # sudo() diperlukan: qty_available query stock.move
-            # yang tidak accessible oleh POS user biasa
             product = line.product_id.sudo()
             if not product or product.type not in ('consu', 'product'):
                 continue
-            if product.qty_available >= 0 and line.qty > product.qty_available:
+            pending_qty = sum(
+                self.env['pos.order.line'].sudo().search([
+                    ('product_id', '=', line.product_id.id),
+                    ('order_id.state', '=', 'draft'),
+                    ('id', '!=', line.id),
+                ]).mapped('qty')
+            )
+            available = product.qty_available - pending_qty
+            if line.qty > available:
                 raise ValidationError(
                     f'Stok "{product.name}" tidak mencukupi.\n'
                     f'Tersedia: {int(product.qty_available)}, '
-                    f'Dipesan: {int(line.qty)}.'
+                    f'Sudah dipesan: {int(pending_qty)}, '
+                    f'Sisa efektif: {int(available)}, '
+                    f'Dipesan sekarang: {int(line.qty)}.'
                 )

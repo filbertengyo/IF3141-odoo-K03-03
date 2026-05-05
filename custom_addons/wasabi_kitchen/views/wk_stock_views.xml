@@ -8,15 +8,18 @@
     <field name="priority">16</field>
     <field name="arch" type="xml">
       <tree string="Koreksi Stok"
-            editable="bottom"
             decoration-danger="qty_available == 0"
             decoration-warning="qty_available &gt; 0 and qty_available &lt; 4"
-            decoration-success="qty_available &gt;= 4">
+            decoration-success="qty_available &gt;= 4"
+            create="false" delete="false">
         <field name="name" string="Nama Menu" readonly="1"/>
         <field name="categ_id" string="Kategori" readonly="1" optional="show"/>
         <field name="list_price" string="Harga (Rp)" readonly="1" widget="monetary"/>
-        <field name="qty_available" string="Stok"/>
+        <field name="qty_available" string="Stok" readonly="1"/>
         <field name="uom_id" string="Satuan" readonly="1" optional="show"/>
+        <button name="action_update_quantity_on_hand" type="object"
+                string="Koreksi Stok" icon="fa-edit"
+                class="btn-sm btn-warning"/>
       </tree>
     </field>
   </record>

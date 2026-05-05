@@ -1,6 +1,7 @@
 import base64
 import csv
 import io
+from datetime import datetime, time
 
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -23,8 +24,8 @@ class WKReportTransaction(models.TransientModel):
         if self.date_end < self.date_start:
             raise UserError('Tanggal selesai tidak boleh sebelum tanggal mulai.')
         orders = self.env['pos.order'].search([
-            ('date_order', '>=', str(self.date_start) + ' 00:00:00'),
-            ('date_order', '<=', str(self.date_end) + ' 23:59:59'),
+            ('date_order', '>=', fields.Datetime.to_string(datetime.combine(self.date_start, time.min))),
+            ('date_order', '<=', fields.Datetime.to_string(datetime.combine(self.date_end, time.max))),
             ('state', 'in', ['paid', 'done', 'invoiced']),
         ])
         self.write({
