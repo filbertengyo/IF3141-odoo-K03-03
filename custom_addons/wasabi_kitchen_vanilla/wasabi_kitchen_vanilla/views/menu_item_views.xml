@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         MENU ITEM — Tree
+         ===================================================== -->
+    <record id="view_wasabi_menu_item_tree" model="ir.ui.view">
+        <field name="name">wasabi.menu.item.tree</field>
+        <field name="model">wasabi.menu.item</field>
+        <field name="arch" type="xml">
+            <tree string="Daftar Menu" sample="1" decoration-muted="not is_available"
+                  decoration-warning="stock_status == 'low'"
+                  decoration-danger="stock_status == 'out'"
+                  decoration-success="stock_status == 'available'">
+                <field name="sequence" widget="handle"/>
+                <field name="sku"/>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="price" widget="monetary"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="remaining_stock" string="Stok"/>
+                <field name="stock_status" widget="badge"
+                       decoration-success="stock_status in ('available','unlimited')"
+                       decoration-warning="stock_status == 'low'"
+                       decoration-danger="stock_status == 'out'"/>
+                <field name="is_available" widget="boolean_toggle"/>
+                <field name="sold_count" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         MENU ITEM — Kanban (catalog cards)
+         ===================================================== -->
+    <record id="view_wasabi_menu_item_kanban" model="ir.ui.view">
+        <field name="name">wasabi.menu.item.kanban</field>
+        <field name="model">wasabi.menu.item</field>
+        <field name="arch" type="xml">
+            <kanban class="o_wasabi_menu_kanban" default_group_by="category_id" sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="price"/>
+                <field name="currency_id"/>
+                <field name="remaining_stock"/>
+                <field name="is_available"/>
+                <field name="stock_status"/>
+                <field name="photo_color"/>
+                <field name="glyph"/>
+                <field name="category_id"/>
+                <field name="sold_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click o_wasabi_menu_card">
+                            <div t-attf-class="o_wasabi_menu_photo o_color_#{record.photo_color.raw_value or 'cream'}">
+                                <span class="o_wasabi_glyph"><t t-esc="record.glyph.raw_value"/></span>
+                                <span t-if="record.stock_status.raw_value == 'out'" class="o_wasabi_badge o_badge_out">HABIS</span>
+                                <span t-if="record.stock_status.raw_value == 'low'" class="o_wasabi_badge o_badge_low">STOK <t t-esc="record.remaining_stock.raw_value"/></span>
+                            </div>
+                            <div class="o_wasabi_menu_body">
+                                <strong class="o_wasabi_menu_name"><field name="name"/></strong>
+                                <div class="o_wasabi_menu_price">
+                                    <field name="price" widget="monetary"/>
+                                </div>
+                                <div class="o_wasabi_menu_meta">
+                                    <span t-if="record.stock_status.raw_value == 'unlimited'" class="o_meta_unlimited">∞ unlimited</span>
+                                    <span t-elif="record.stock_status.raw_value == 'available'" class="o_meta_stock">Stok: <t t-esc="record.remaining_stock.raw_value"/></span>
+                                    <span class="o_meta_sold">· <t t-esc="record.sold_count.raw_value or 0"/> terjual</span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         MENU ITEM — Form
+         ===================================================== -->
+    <record id="view_wasabi_menu_item_form" model="ir.ui.view">
+        <field name="name">wasabi.menu.item.form</field>
+        <field name="model">wasabi.menu.item</field>
+        <field name="arch" type="xml">
+            <form string="Item Menu">
+                <header>
+                    <button name="action_toggle_availability" type="object"
+                            string="Toggle Ketersediaan" class="btn-secondary"/>
+                    <field name="stock_status" widget="statusbar"
+                           statusbar_visible="out,low,available,unlimited"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_stock_logs" type="object"
+                                class="oe_stat_button" icon="fa-history">
+                            <span class="o_stat_text">Log Stok</span>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-shopping-bag" disabled="1">
+                            <field name="sold_count" widget="statinfo" string="Terjual"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Habis" bg_color="text-bg-danger"
+                            invisible="stock_status != 'out'"/>
+                    <widget name="web_ribbon" title="Stok Rendah" bg_color="text-bg-warning"
+                            invisible="stock_status != 'low'"/>
+
+                    <field name="photo" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Nama Menu"/></h1>
+                        <h3><field name="sku" placeholder="MN-XXX"/></h3>
+                    </div>
+
+                    <group>
+                        <group string="Klasifikasi">
+                            <field name="category_id"/>
+                            <field name="sequence"/>
+                            <field name="is_available"/>
+                        </group>
+                        <group string="Harga &amp; Stok">
+                            <field name="price"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="remaining_stock"
+                                   help="Set -1 untuk unlimited"/>
+                            <field name="is_unlimited" invisible="1"/>
+                            <field name="low_stock_threshold"/>
+                        </group>
+                        <group string="Tampilan">
+                            <field name="photo_color"/>
+                            <field name="glyph" placeholder="鮭"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Deskripsi" name="description">
+                            <field name="description" placeholder="Deskripsi menu..."/>
+                        </page>
+                        <page string="Riwayat Pesanan" name="orders">
+                            <field name="order_item_ids" readonly="1">
+                                <tree>
+                                    <field name="order_id"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price"/>
+                                    <field name="subtotal"/>
+                                    <field name="order_status" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Log Stok" name="stock_logs">
+                            <field name="stock_log_ids" readonly="1">
+                                <tree>
+                                    <field name="create_date"/>
+                                    <field name="staff_id"/>
+                                    <field name="reason"/>
+                                    <field name="before_qty"/>
+                                    <field name="delta"/>
+                                    <field name="after_qty"/>
+                                    <field name="note"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         MENU ITEM — Search
+         ===================================================== -->
+    <record id="view_wasabi_menu_item_search" model="ir.ui.view">
+        <field name="name">wasabi.menu.item.search</field>
+        <field name="model">wasabi.menu.item</field>
+        <field name="arch" type="xml">
+            <search string="Cari Menu">
+                <field name="name" string="Nama" filter_domain="['|',('name','ilike',self),('sku','ilike',self)]"/>
+                <field name="category_id"/>
+                <field name="sku"/>
+                <separator/>
+                <filter string="Tersedia" name="filter_available" domain="[('is_available','=',True)]"/>
+                <filter string="Habis" name="filter_out" domain="[('stock_status','=','out')]"/>
+                <filter string="Stok Rendah" name="filter_low" domain="[('stock_status','=','low')]"/>
+                <filter string="Unlimited" name="filter_unlimited" domain="[('stock_status','=','unlimited')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Kategori" name="group_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Status Stok" name="group_status" context="{'group_by': 'stock_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         Action
+         ===================================================== -->
+    <record id="action_wasabi_menu_item" model="ir.actions.act_window">
+        <field name="name">Menu &amp; Stok</field>
+        <field name="res_model">wasabi.menu.item</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_wasabi_menu_item_search"/>
+        <field name="context">{'search_default_filter_available': 1}</field>
+    </record>
+
+</odoo>

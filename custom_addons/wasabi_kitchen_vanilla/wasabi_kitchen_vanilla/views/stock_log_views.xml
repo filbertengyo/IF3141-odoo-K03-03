@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_wasabi_stock_log_tree" model="ir.ui.view">
+        <field name="name">wasabi.stock.log.tree</field>
+        <field name="model">wasabi.stock.log</field>
+        <field name="arch" type="xml">
+            <tree string="Log Stok" sample="1" create="false" edit="false"
+                  decoration-success="delta &gt; 0"
+                  decoration-danger="delta &lt; 0"
+                  decoration-info="reason == 'auto_decrement'">
+                <field name="create_date"/>
+                <field name="menu_item_id"/>
+                <field name="category_name" optional="hide"/>
+                <field name="reason" widget="badge"/>
+                <field name="before_qty"/>
+                <field name="delta" column_invisible="1"/>
+                <field name="delta_label" string="Δ"/>
+                <field name="after_qty"/>
+                <field name="staff_id"/>
+                <field name="order_id" optional="show"/>
+                <field name="note" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_wasabi_stock_log_form" model="ir.ui.view">
+        <field name="name">wasabi.stock.log.form</field>
+        <field name="model">wasabi.stock.log</field>
+        <field name="arch" type="xml">
+            <form string="Log Stok" create="false" edit="false">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="menu_item_id"/>
+                            <field name="staff_id"/>
+                            <field name="order_id"/>
+                            <field name="reason"/>
+                        </group>
+                        <group>
+                            <field name="before_qty"/>
+                            <field name="after_qty"/>
+                            <field name="delta"/>
+                            <field name="create_date"/>
+                        </group>
+                    </group>
+                    <separator string="Catatan"/>
+                    <field name="note" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_wasabi_stock_log_search" model="ir.ui.view">
+        <field name="name">wasabi.stock.log.search</field>
+        <field name="model">wasabi.stock.log</field>
+        <field name="arch" type="xml">
+            <search string="Cari Log">
+                <field name="menu_item_id"/>
+                <field name="staff_id"/>
+                <field name="reason"/>
+                <separator/>
+                <filter string="Auto-Decrement" name="filter_auto" domain="[('reason','=','auto_decrement')]"/>
+                <filter string="Koreksi Manual" name="filter_manual" domain="[('reason','=','manual_correction')]"/>
+                <filter string="Hari Ini" name="filter_today"
+                        domain="[('create_date','&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Menu" name="group_menu" context="{'group_by': 'menu_item_id'}"/>
+                    <filter string="Alasan" name="group_reason" context="{'group_by': 'reason'}"/>
+                    <filter string="Staff" name="group_staff" context="{'group_by': 'staff_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_wasabi_stock_log" model="ir.actions.act_window">
+        <field name="name">Log Perubahan Stok</field>
+        <field name="res_model">wasabi.stock.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_wasabi_stock_log_search"/>
+    </record>
+
+</odoo>

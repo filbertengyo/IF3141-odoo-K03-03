@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         BILLING — Floor plan view (UC-09)
+
+         Tampilan kanban tile besar untuk meja, kasir bisa langsung
+         klik meja yang berstatus READY untuk membuka tagihan.
+         ===================================================== -->
+    <record id="view_wasabi_billing_kanban" model="ir.ui.view">
+        <field name="name">wasabi.order.billing.kanban</field>
+        <field name="model">wasabi.order</field>
+        <field name="arch" type="xml">
+            <kanban class="o_wasabi_billing_kanban" sample="1"
+                    create="false" group_create="false">
+                <field name="id"/>
+                <field name="order_number"/>
+                <field name="table_id"/>
+                <field name="table_number"/>
+                <field name="create_date"/>
+                <field name="status"/>
+                <field name="item_count"/>
+                <field name="total_price"/>
+                <field name="elapsed_minutes"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click o_wasabi_bill_tile o_status_#{record.status.raw_value}">
+                            <div t-if="record.status.raw_value == 'ready'" class="o_wasabi_ribbon">SIAP BAYAR</div>
+                            <div class="o_wasabi_bill_eyebrow">Table</div>
+                            <div class="o_wasabi_bill_num">
+                                <t t-esc="record.table_number.raw_value &lt; 10 ? '0' + record.table_number.raw_value : record.table_number.raw_value"/>
+                            </div>
+                            <div class="o_wasabi_bill_status">
+                                <span t-attf-class="o_status_pill o_status_pill_#{record.status.raw_value}">
+                                    <t t-if="record.status.raw_value == 'pending'">⏳ Pending</t>
+                                    <t t-if="record.status.raw_value == 'cooking'">🔥 Cooking</t>
+                                    <t t-if="record.status.raw_value == 'ready'">✓ Ready</t>
+                                </span>
+                            </div>
+                            <div class="o_wasabi_bill_meta">
+                                <field name="item_count"/> item ·
+                                <field name="total_price" widget="monetary"/>
+                            </div>
+                            <button t-if="record.status.raw_value == 'ready'"
+                                    name="action_open_billing" type="object"
+                                    class="btn btn-sm btn-primary o_wasabi_bill_btn">
+                                🧾 Buka Billing
+                            </button>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         BILLING ACTION
+         ===================================================== -->
+    <record id="action_wasabi_billing" model="ir.actions.act_window">
+        <field name="name">Buka Billing</field>
+        <field name="res_model">wasabi.order</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_wasabi_billing_kanban')}),
+            (0, 0, {'view_mode': 'tree',   'view_id': ref('view_wasabi_order_tree')}),
+            (0, 0, {'view_mode': 'form',   'view_id': ref('view_wasabi_order_billing_form')})]"/>
+        <field name="domain">[('status','in',('pending','cooking','ready'))]</field>
+        <field name="search_view_id" ref="view_wasabi_order_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tidak ada meja yang siap dibilling
+            </p>
+            <p>Meja yang berstatus <b>READY</b> akan muncul di sini, siap untuk dibukakan tagihan.</p>
+        </field>
+    </record>
+
+</odoo>

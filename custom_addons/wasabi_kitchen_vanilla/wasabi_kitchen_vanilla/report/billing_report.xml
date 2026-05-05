@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         BILLING / RECEIPT REPORT (PDF via QWeb)
+         ===================================================== -->
+    <record id="action_report_billing" model="ir.actions.report">
+        <field name="name">Bill / Struk Pembayaran</field>
+        <field name="model">wasabi.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">wasabi_kitchen_vanilla.report_billing_template</field>
+        <field name="report_file">wasabi_kitchen_vanilla.report_billing_template</field>
+        <field name="binding_model_id" ref="model_wasabi_order"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_us"/>
+    </record>
+
+    <template id="report_billing_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page o_wasabi_receipt">
+                        <h2 class="text-center" style="font-family: serif;">山葵 Wasabi Kitchen</h2>
+                        <p class="text-center text-muted">Jl. Raya Jatinangor No. 123 · Sumedang</p>
+                        <hr/>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Order #</strong>
+                                <span t-field="o.order_number"/>
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>Meja</strong>
+                                <span t-field="o.table_id.display_name"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Tanggal</strong>
+                                <span t-field="o.create_date"/>
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>Status</strong>
+                                <span t-field="o.status"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Menu</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-end">Harga</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.order_item_ids" t-as="line">
+                                    <td>
+                                        <span t-field="line.name"/>
+                                        <small t-if="line.note" class="d-block text-muted">
+                                            ⤷ <span t-field="line.note"/>
+                                        </small>
+                                    </td>
+                                    <td class="text-center"><span t-field="line.quantity"/></td>
+                                    <td class="text-end">
+                                        <span t-field="line.unit_price"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="line.subtotal"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row mt-3">
+                            <div class="col-7"></div>
+                            <div class="col-5">
+                                <table class="table table-sm">
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td class="text-end">
+                                            <span t-field="o.subtotal"
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>PB1 (10%)</td>
+                                        <td class="text-end">
+                                            <span t-field="o.pb1"
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Service (5%)</td>
+                                        <td class="text-end">
+                                            <span t-field="o.service_charge"
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr style="font-size: 1.2em; font-weight: bold; border-top: 2px solid #714B67;">
+                                        <td>TOTAL</td>
+                                        <td class="text-end">
+                                            <span t-field="o.total_price"
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div t-if="o.transaction_id" class="mt-4 p-3" style="background: #e8f1d9; border-radius: 8px;">
+                            <h4>✓ LUNAS</h4>
+                            <p>
+                                Trx# <span t-field="o.transaction_id.transaction_number"/> ·
+                                <span t-field="o.transaction_id.payment_method"/> ·
+                                Kasir: <span t-field="o.transaction_id.staff_id.name"/>
+                            </p>
+                        </div>
+
+                        <hr/>
+                        <p class="text-center text-muted small mt-4">
+                            ありがとうございました — Terima kasih atas kunjungan Anda<br/>
+                            Powered by Wasabi Kitchen QR-Ordering System
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- =====================================================
+         CUSTOMER-FACING TEMPLATES
+         Self-contained HTML (tidak butuh website module).
+         Pakai web.frontend_layout yang sudah inherent di portal.
+         ===================================================== -->
+
+    <template id="customer_layout" name="Wasabi Customer Layout">
+        <!-- Minimal HTML wrapper untuk pelanggan (mobile-first) -->
+        <html t-att-lang="lang and lang.replace('_', '-')">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+                <meta name="theme-color" content="#714B67"/>
+                <title>Wasabi Kitchen — QR Ordering</title>
+                <link rel="stylesheet" type="text/css" href="/wasabi_kitchen_vanilla/static/src/css/customer.css"/>
+            </head>
+            <body>
+                <t t-out="0"/>
+                <script type="text/javascript" src="/wasabi_kitchen_vanilla/static/src/js/customer_menu.js"></script>
+            </body>
+        </html>
+    </template>
+
+    <template id="customer_invalid_qr" name="Wasabi: Invalid QR">
+        <t t-call="wasabi_kitchen_vanilla.customer_layout">
+            <div class="o_wasabi_customer">
+                <div class="o_wasabi_customer_card">
+                    <div class="o_wasabi_emoji">🚫</div>
+                    <h2>QR Code Tidak Valid</h2>
+                    <p>QR code yang Anda scan tidak dikenali. Silakan pindai QR yang ada di meja Anda atau hubungi pelayan.</p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="customer_menu_page" name="Wasabi: Browse Menu">
+        <t t-call="wasabi_kitchen_vanilla.customer_layout">
+            <div class="o_wasabi_customer">
+                <header class="o_wasabi_customer_header">
+                    <div class="o_wasabi_brand">
+                        <div class="o_wasabi_logo">山葵</div>
+                        <div>
+                            <div class="o_wasabi_brand_name">Wasabi Kitchen</div>
+                            <small>Jatinangor</small>
+                        </div>
+                    </div>
+                    <div class="o_wasabi_table_pin">
+                        🍵 Meja <t t-out="str(table.table_number).zfill(2)"/>
+                    </div>
+                </header>
+
+                <h1 class="o_wasabi_menu_title">Menu Hari Ini</h1>
+
+                <div class="o_wasabi_cat_tabs" id="cat-tabs">
+                    <button class="o_wasabi_cat_tab active" data-cat="all">Semua</button>
+                    <t t-foreach="categories" t-as="cat">
+                        <button class="o_wasabi_cat_tab" t-att-data-cat="cat.id">
+                            <t t-out="cat.icon"/> <t t-out="cat.name"/>
+                        </button>
+                    </t>
+                </div>
+
+                <div class="o_wasabi_menu_grid" id="menu-grid">
+                    <t t-foreach="menu_items" t-as="item">
+                        <div class="o_wasabi_menu_item"
+                             t-att-data-cat="item.category_id.id"
+                             t-att-data-id="item.id"
+                             t-att-data-price="item.price"
+                             t-att-data-name="item.name">
+                            <div t-attf-class="o_wasabi_menu_photo o_color_#{item.photo_color or 'cream'}">
+                                <span class="o_wasabi_glyph"><t t-out="item.glyph or item.category_id.icon"/></span>
+                            </div>
+                            <div class="o_wasabi_menu_info">
+                                <h4>
+                                    <t t-out="item.name"/>
+                                    <span t-if="item.stock_status == 'low'" class="o_wasabi_stock_chip o_low">
+                                        Stok <t t-out="item.remaining_stock"/>
+                                    </span>
+                                </h4>
+                                <p class="o_wasabi_desc"><t t-out="item.description or ''"/></p>
+                                <div class="o_wasabi_price">
+                                    Rp <t t-out="'{:,.0f}'.format(item.price).replace(',', '.')"/>
+                                </div>
+                            </div>
+                            <button class="o_wasabi_add_btn" t-att-data-id="item.id">+</button>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="o_wasabi_cart_bar" id="cart-bar" style="display:none;">
+                    <div class="o_wasabi_cart_count" id="cart-count">0</div>
+                    <div class="o_wasabi_cart_info">
+                        <strong>Tinjau Pesanan</strong>
+                        <small id="cart-summary">0 item</small>
+                    </div>
+                    <button id="cart-checkout">Lanjut →</button>
+                </div>
+
+                <input type="hidden" id="qr-token" t-att-value="qr_token"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="customer_order_status" name="Wasabi: Order Status">
+        <t t-call="wasabi_kitchen_vanilla.customer_layout">
+            <div class="o_wasabi_customer">
+                <div class="o_wasabi_status_card" t-att-data-status="order.status">
+                    <div class="o_wasabi_emoji">
+                        <t t-if="order.status == 'pending'">⏳</t>
+                        <t t-if="order.status == 'cooking'">🔥</t>
+                        <t t-if="order.status == 'ready'">✅</t>
+                        <t t-if="order.status == 'paid'">🎉</t>
+                    </div>
+                    <h2>
+                        <t t-if="order.status == 'pending'">Pesanan Diterima</t>
+                        <t t-if="order.status == 'cooking'">Sedang Dimasak</t>
+                        <t t-if="order.status == 'ready'">Siap Diantar</t>
+                        <t t-if="order.status == 'paid'">Terima Kasih!</t>
+                    </h2>
+                    <p>Order #<t t-out="order.order_number"/> · Meja <t t-out="order.table_number"/></p>
+                    <p class="o_wasabi_total">
+                        Total: Rp <t t-out="'{:,.0f}'.format(order.total_price).replace(',', '.')"/>
+                    </p>
+
+                    <div class="o_wasabi_timeline">
+                        <div t-attf-class="o_wasabi_step #{'active' if order.status in ('pending','cooking','ready','paid') else ''}">
+                            <span>1</span> Pending
+                        </div>
+                        <div t-attf-class="o_wasabi_step #{'active' if order.status in ('cooking','ready','paid') else ''}">
+                            <span>2</span> Cooking
+                        </div>
+                        <div t-attf-class="o_wasabi_step #{'active' if order.status in ('ready','paid') else ''}">
+                            <span>3</span> Ready
+                        </div>
+                        <div t-attf-class="o_wasabi_step #{'active' if order.status == 'paid' else ''}">
+                            <span>4</span> Paid
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="order-id" t-att-value="order.id"/>
+            </div>
+        </t>
+    </template>
+
+</odoo>

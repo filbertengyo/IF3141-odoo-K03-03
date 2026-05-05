@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         CATEGORY — Tree
+         ===================================================== -->
+    <record id="view_wasabi_category_tree" model="ir.ui.view">
+        <field name="name">wasabi.category.tree</field>
+        <field name="model">wasabi.category</field>
+        <field name="arch" type="xml">
+            <tree string="Kategori Menu" sample="1">
+                <field name="sequence" widget="handle"/>
+                <field name="icon"/>
+                <field name="name"/>
+                <field name="menu_item_count" string="Jumlah Menu"/>
+                <field name="is_active" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         CATEGORY — Kanban
+         ===================================================== -->
+    <record id="view_wasabi_category_kanban" model="ir.ui.view">
+        <field name="name">wasabi.category.kanban</field>
+        <field name="model">wasabi.category</field>
+        <field name="arch" type="xml">
+            <kanban class="o_wasabi_category_kanban" sample="1">
+                <field name="id"/>
+                <field name="icon"/>
+                <field name="name"/>
+                <field name="menu_item_count"/>
+                <field name="is_active"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click o_wasabi_cat_card #{kanban_color(record.color.raw_value)}">
+                            <div class="o_wasabi_cat_icon">
+                                <span t-esc="record.icon.raw_value or '🍽️'"/>
+                            </div>
+                            <div class="o_wasabi_cat_body">
+                                <strong><field name="name"/></strong>
+                                <div class="o_wasabi_cat_meta">
+                                    <field name="menu_item_count"/> menu
+                                    <span t-if="!record.is_active.raw_value" class="badge text-bg-secondary ms-2">Nonaktif</span>
+                                </div>
+                            </div>
+                            <div class="o_wasabi_cat_action">
+                                <button name="action_view_menu_items" type="object" class="btn btn-link btn-sm">
+                                    Lihat menu →
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         CATEGORY — Form
+         ===================================================== -->
+    <record id="view_wasabi_category_form" model="ir.ui.view">
+        <field name="name">wasabi.category.form</field>
+        <field name="model">wasabi.category</field>
+        <field name="arch" type="xml">
+            <form string="Kategori Menu">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_menu_items" type="object"
+                                class="oe_stat_button" icon="fa-cutlery">
+                            <field name="menu_item_count" widget="statinfo" string="Menu"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Nonaktif" bg_color="text-bg-danger"
+                            invisible="is_active"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Nama Kategori, mis. Sushi"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="icon" placeholder="🍣"/>
+                            <field name="sequence"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                        <group>
+                            <field name="is_active"/>
+                        </group>
+                    </group>
+                    <separator string="Deskripsi"/>
+                    <field name="description" placeholder="Deskripsi singkat kategori..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         CATEGORY — Action
+         ===================================================== -->
+    <record id="action_wasabi_category" model="ir.actions.act_window">
+        <field name="name">Kategori Menu</field>
+        <field name="res_model">wasabi.category</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Belum ada kategori menu
+            </p>
+            <p>Buat kategori untuk mengelompokkan menu (Sushi, Ramen, Bento, dll).</p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,226 @@
+/* =============================================================
+   Billing — Floor plan & payment wizard
+   ============================================================= */
+
+/* Floor plan kanban */
+.o_wasabi_billing_kanban .o_wasabi_bill_tile {
+    aspect-ratio: 1;
+    background: #fff;
+    border: 1px solid #e3e1e6;
+    border-radius: var(--wk-radius-lg);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all .15s;
+    position: relative;
+    overflow: hidden;
+    min-height: 160px;
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_tile:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--wk-shadow-md);
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_tile.o_status_ready {
+    background: linear-gradient(135deg, #fff, var(--wk-accent-soft));
+    border-color: var(--wk-accent);
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_tile.o_status_cooking {
+    background: linear-gradient(135deg, #fff, #eff6ff);
+    border-color: #bfdbfe;
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_tile.o_status_pending {
+    background: linear-gradient(135deg, #fff, #fffbeb);
+    border-color: #fde68a;
+}
+
+.o_wasabi_ribbon {
+    position: absolute;
+    top: 0; right: 0;
+    background: var(--wk-accent);
+    color: #1f1d24;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-bottom-left-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.o_wasabi_billing_kanban .o_wasabi_bill_eyebrow {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #6c7079;
+    font-weight: 600;
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_num {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--wk-primary-dark);
+    line-height: 1;
+    margin: 6px 0;
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_status { margin: 6px 0; }
+.o_wasabi_billing_kanban .o_wasabi_bill_meta {
+    font-size: 11px;
+    color: #6c7079;
+    margin-top: 4px;
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_btn {
+    margin-top: auto;
+    background: var(--wk-primary) !important;
+    border-color: var(--wk-primary) !important;
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 11px;
+}
+
+/* Billing form */
+.o_wasabi_billing_form .o_wasabi_bill_sheet { max-width: 640px; }
+.o_wasabi_billing_form .o_wasabi_bill_head {
+    background: linear-gradient(135deg, var(--wk-primary), var(--wk-primary-dark));
+    color: #fff;
+    margin: -24px -24px 18px;
+    padding: 18px 24px;
+    border-radius: var(--wk-radius-lg) var(--wk-radius-lg) 0 0;
+}
+.o_wasabi_billing_form .o_wasabi_bill_eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    opacity: .75;
+}
+.o_wasabi_billing_form .o_wasabi_bill_title {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 4px 0;
+}
+.o_wasabi_billing_form .o_wasabi_bill_title .o_field_widget { color: #fff !important; }
+.o_wasabi_billing_form .o_wasabi_bill_meta {
+    font-size: 12px;
+    opacity: .85;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.o_wasabi_billing_form .o_wasabi_bill_lines tbody tr td:nth-child(1) { font-weight: 500; }
+
+.o_wasabi_bill_totals {
+    background: #fcfbfd;
+    padding: 16px;
+    border-radius: var(--wk-radius-lg);
+    border: 1px solid #e3e1e6;
+}
+
+/* Payment wizard */
+.o_wasabi_pay_form { max-width: 900px; }
+.o_wasabi_pay_form .o_wasabi_pay_head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: linear-gradient(135deg, var(--wk-primary), var(--wk-primary-dark));
+    color: #fff;
+    margin: -24px -24px 18px;
+    padding: 20px 24px;
+    border-radius: var(--wk-radius-lg) var(--wk-radius-lg) 0 0;
+}
+.o_wasabi_pay_form .o_wasabi_pay_head h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 28px;
+    margin: 4px 0;
+}
+.o_wasabi_pay_form .o_wasabi_pay_head .o_field_widget { color: #fff !important; }
+.o_wasabi_pay_form .o_wasabi_label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    opacity: .75;
+}
+.o_wasabi_pay_form .o_wasabi_pay_total { text-align: right; }
+.o_wasabi_pay_form .o_wasabi_meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    opacity: .85;
+}
+
+.o_wasabi_pay_method label {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    border: 2px solid #e3e1e6;
+    border-radius: var(--wk-radius-lg);
+    background: #fff;
+    cursor: pointer;
+    transition: all .15s;
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 8px;
+}
+.o_wasabi_pay_method label:hover { border-color: var(--wk-primary-light); }
+.o_wasabi_pay_method input:checked + label,
+.o_wasabi_pay_method label.active {
+    border-color: var(--wk-primary);
+    background: linear-gradient(135deg, #fff, #f9f5f8);
+    box-shadow: 0 0 0 3px rgba(113,75,103,.12);
+}
+
+.o_wasabi_pay_input input {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 28px !important;
+    font-weight: 700;
+    color: var(--wk-primary);
+    border: none !important;
+    border-bottom: 2px solid var(--wk-primary) !important;
+    border-radius: 0 !important;
+    padding-bottom: 6px !important;
+}
+.o_wasabi_pay_change input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px !important;
+    font-weight: 700;
+    color: var(--wk-accent-dark) !important;
+    background: var(--wk-accent-soft) !important;
+    border: 1px dashed var(--wk-accent) !important;
+    border-radius: var(--wk-radius) !important;
+    padding: 8px 12px !important;
+}
+
+.o_wasabi_qris_panel {
+    text-align: center;
+    background: #fcfbfd;
+    border: 1px solid #e3e1e6;
+    border-radius: var(--wk-radius-lg);
+    padding: 24px;
+    margin-top: 12px;
+}
+.o_wasabi_qris_mock {
+    width: 200px; height: 200px;
+    margin: 16px auto;
+    background:
+      linear-gradient(45deg, #1f1d24 25%, transparent 25%),
+      linear-gradient(-45deg, #1f1d24 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #1f1d24 75%),
+      linear-gradient(-45deg, transparent 75%, #1f1d24 75%);
+    background-size: 14px 14px;
+    background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+    border-radius: 8px;
+    border: 8px solid #fff;
+    box-shadow: var(--wk-shadow-md);
+}
+.o_wasabi_qris_amount {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--wk-primary);
+    margin-top: 12px;
+}
+.o_wasabi_qris_providers {
+    font-size: 11px;
+    color: #6c7079;
+    margin-top: 6px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}

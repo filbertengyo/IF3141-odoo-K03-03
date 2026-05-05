@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_wasabi_qr_preview_form" model="ir.ui.view">
+        <field name="name">wasabi.qr.preview.form</field>
+        <field name="model">wasabi.qr.preview</field>
+        <field name="arch" type="xml">
+            <form string="QR Code Meja" create="false" edit="false">
+                <sheet class="text-center">
+                    <h1>
+                        Meja <field name="table_number" readonly="1" nolabel="1" class="oe_inline"/>
+                    </h1>
+                    <p class="text-muted">
+                        <field name="floor" readonly="1" nolabel="1" class="oe_inline"/>
+                        ·
+                        <field name="capacity" readonly="1" nolabel="1" class="oe_inline"/> pax
+                    </p>
+
+                    <div class="my-4">
+                        <field name="qr_image" widget="image"
+                               options="{'size': [320, 320]}"
+                               nolabel="1" readonly="1"/>
+                    </div>
+
+                    <p>
+                        <strong>Scan QR ini untuk memesan:</strong>
+                    </p>
+                    <group>
+                        <field name="qr_url" widget="CopyClipboardChar" readonly="1" nolabel="1"/>
+                    </group>
+
+                    <field name="table_id" invisible="1"/>
+                    <field name="qr_token" invisible="1"/>
+                </sheet>
+                <footer>
+                    <button name="action_print" type="object"
+                            string="🖨 Buka di Tab Baru (Print)" class="btn-primary"/>
+                    <button string="Tutup" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

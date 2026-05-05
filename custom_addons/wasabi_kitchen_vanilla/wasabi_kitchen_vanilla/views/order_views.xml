@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         ORDER — Tree
+         ===================================================== -->
+    <record id="view_wasabi_order_tree" model="ir.ui.view">
+        <field name="name">wasabi.order.tree</field>
+        <field name="model">wasabi.order</field>
+        <field name="arch" type="xml">
+            <tree string="Pesanan" sample="1"
+                  decoration-warning="urgency == 'warn'"
+                  decoration-danger="urgency == 'late'"
+                  decoration-muted="status == 'cancelled'"
+                  decoration-success="status == 'paid'">
+                <field name="order_number"/>
+                <field name="create_date"/>
+                <field name="table_id"/>
+                <field name="item_count" string="Item"/>
+                <field name="total_qty" string="Qty"/>
+                <field name="subtotal" optional="hide"/>
+                <field name="pb1" optional="hide"/>
+                <field name="service_charge" optional="hide"/>
+                <field name="total_price"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="elapsed_minutes" string="Elapsed (m)" optional="show"/>
+                <field name="urgency" column_invisible="1"/>
+                <field name="status" widget="badge"
+                       decoration-warning="status == 'pending'"
+                       decoration-info="status == 'cooking'"
+                       decoration-success="status == 'ready'"
+                       decoration-muted="status == 'paid'"
+                       decoration-danger="status == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         ORDER — Form (operasional, untuk koki/manager review)
+         ===================================================== -->
+    <record id="view_wasabi_order_form" model="ir.ui.view">
+        <field name="name">wasabi.order.form</field>
+        <field name="model">wasabi.order</field>
+        <field name="arch" type="xml">
+            <form string="Pesanan">
+                <header>
+                    <button name="action_start_cooking" type="object"
+                            string="▶ Mulai Masak" class="btn-primary"
+                            invisible="status != 'pending'"/>
+                    <button name="action_mark_ready" type="object"
+                            string="✓ Tandai Ready" class="btn-success"
+                            invisible="status != 'cooking'"/>
+                    <button name="action_open_billing" type="object"
+                            string="🧾 Buka Billing" class="btn-primary"
+                            invisible="status != 'ready'"
+                            groups="wasabi_kitchen_vanilla.group_wasabi_kasir"/>
+                    <button name="action_cancel" type="object"
+                            string="Batalkan" class="btn-secondary"
+                            invisible="status in ('paid','cancelled')"
+                            confirm="Yakin batalkan pesanan? Stok akan dikembalikan."/>
+                    <button name="action_print_bill" type="object"
+                            string="🖨 Cetak Bill" class="btn-secondary"
+                            invisible="status not in ('ready','paid')"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="pending,cooking,ready,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-clock-o" disabled="1">
+                            <field name="elapsed_minutes" widget="statinfo" string="menit"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Lunas" bg_color="text-bg-success"
+                            invisible="status != 'paid'"/>
+                    <widget name="web_ribbon" title="Dibatalkan" bg_color="text-bg-danger"
+                            invisible="status != 'cancelled'"/>
+                    <widget name="web_ribbon" title="Terlambat" bg_color="text-bg-danger"
+                            invisible="urgency != 'late'"/>
+
+                    <div class="oe_title">
+                        <label for="order_number" class="oe_edit_only"/>
+                        <h1><field name="order_number" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="table_id" options="{'no_create': True}"/>
+                            <field name="create_date" readonly="1"/>
+                            <field name="cooking_at" readonly="1" invisible="not cooking_at"/>
+                            <field name="ready_at" readonly="1" invisible="not ready_at"/>
+                            <field name="paid_at" readonly="1" invisible="not paid_at"/>
+                        </group>
+                        <group>
+                            <field name="item_count" readonly="1"/>
+                            <field name="total_qty" readonly="1"/>
+                            <field name="urgency" widget="badge"
+                                   decoration-warning="urgency == 'warn'"
+                                   decoration-danger="urgency == 'late'"
+                                   readonly="1"/>
+                            <field name="transaction_id" readonly="1" invisible="not transaction_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Item Pesanan" name="items">
+                            <field name="order_item_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="menu_item_id" options="{'no_create': True}"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price"/>
+                                    <field name="subtotal" readonly="1"/>
+                                    <field name="note"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="subtotal"/>
+                                <field name="pb1"/>
+                                <field name="service_charge"/>
+                                <field name="total_price" class="oe_subtotal_footer_separator"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </page>
+                        <page string="Catatan" name="notes">
+                            <field name="notes" placeholder="Catatan untuk dapur..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         ORDER — Billing Form (kasir, popup style)
+         ===================================================== -->
+    <record id="view_wasabi_order_billing_form" model="ir.ui.view">
+        <field name="name">wasabi.order.billing.form</field>
+        <field name="model">wasabi.order</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <form string="Billing" class="o_wasabi_billing_form">
+                <header>
+                    <button name="%(action_wasabi_payment_wizard)d" type="action"
+                            string="💳 Lanjut ke Pembayaran" class="btn-primary"
+                            invisible="status != 'ready'"
+                            context="{'default_order_id': active_id}"/>
+                    <button name="action_print_bill" type="object"
+                            string="🖨 Cetak Bill" class="btn-secondary"/>
+                </header>
+                <sheet class="o_wasabi_bill_sheet">
+                    <field name="status" invisible="1"/>
+                    <div class="o_wasabi_bill_head">
+                        <div class="o_wasabi_bill_eyebrow">Tagihan terbuka</div>
+                        <h1 class="o_wasabi_bill_title">
+                            <field name="table_id" readonly="1" nolabel="1"/>
+                        </h1>
+                        <div class="o_wasabi_bill_meta">
+                            <field name="order_number" readonly="1" nolabel="1"/>
+                            <span> · dibuka </span>
+                            <field name="create_date" readonly="1" nolabel="1"/>
+                            <span> · </span>
+                            <field name="item_count" readonly="1" nolabel="1"/> item
+                        </div>
+                    </div>
+
+                    <field name="order_item_ids" readonly="1">
+                        <tree create="false" delete="false" edit="false" class="o_wasabi_bill_lines">
+                            <field name="name"/>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="subtotal"/>
+                            <field name="note"/>
+                            <field name="currency_id" column_invisible="1"/>
+                        </tree>
+                    </field>
+
+                    <group class="oe_subtotal_footer oe_right o_wasabi_bill_totals">
+                        <field name="subtotal" readonly="1"/>
+                        <field name="pb1" readonly="1"/>
+                        <field name="service_charge" readonly="1"/>
+                        <field name="total_price" readonly="1" class="oe_subtotal_footer_separator"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         ORDER — Search
+         ===================================================== -->
+    <record id="view_wasabi_order_search" model="ir.ui.view">
+        <field name="name">wasabi.order.search</field>
+        <field name="model">wasabi.order</field>
+        <field name="arch" type="xml">
+            <search string="Cari Pesanan">
+                <field name="order_number"/>
+                <field name="table_id"/>
+                <field name="status"/>
+                <separator/>
+                <filter string="Pending" name="filter_pending" domain="[('status','=','pending')]"/>
+                <filter string="Cooking" name="filter_cooking" domain="[('status','=','cooking')]"/>
+                <filter string="Ready" name="filter_ready" domain="[('status','=','ready')]"/>
+                <filter string="Paid" name="filter_paid" domain="[('status','=','paid')]"/>
+                <separator/>
+                <filter string="Aktif (Pending/Cooking/Ready)" name="filter_active"
+                        domain="[('status','in',('pending','cooking','ready'))]"/>
+                <filter string="Hari Ini" name="filter_today"
+                        domain="[('create_date','&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                    <filter string="Meja" name="group_table" context="{'group_by': 'table_id'}"/>
+                    <filter string="Tanggal" name="group_date" context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_wasabi_order" model="ir.actions.act_window">
+        <field name="name">Semua Pesanan</field>
+        <field name="res_model">wasabi.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_wasabi_order_search"/>
+    </record>
+
+    <record id="action_wasabi_order_active" model="ir.actions.act_window">
+        <field name="name">Pesanan Aktif</field>
+        <field name="res_model">wasabi.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_wasabi_order_search"/>
+        <field name="domain">[('status','in',('pending','cooking','ready'))]</field>
+        <field name="context">{'search_default_filter_active': 1}</field>
+    </record>
+
+</odoo>

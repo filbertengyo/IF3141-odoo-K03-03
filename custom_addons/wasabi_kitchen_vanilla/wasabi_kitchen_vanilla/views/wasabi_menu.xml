@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         Root menu — Wasabi Kitchen application
+         ===================================================== -->
+    <menuitem id="menu_wasabi_root"
+              name="Wasabi Kitchen"
+              web_icon="wasabi_kitchen_vanilla,static/description/icon.png"
+              sequence="15"/>
+
+    <!-- =====================================================
+         1) DASHBOARD
+         ===================================================== -->
+    <menuitem id="menu_wasabi_dashboard"
+              name="Dashboard"
+              parent="menu_wasabi_root"
+              action="action_wasabi_dashboard_open"
+              sequence="5"/>
+
+    <!-- =====================================================
+         2) KITCHEN — antrian masak & koreksi stok
+         ===================================================== -->
+    <menuitem id="menu_wasabi_kitchen"
+              name="Kitchen"
+              parent="menu_wasabi_root"
+              sequence="10"/>
+
+    <menuitem id="menu_wasabi_kds"
+              name="Antrian Masak (KDS)"
+              parent="menu_wasabi_kitchen"
+              action="action_wasabi_kds"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_koki"/>
+
+    <menuitem id="menu_wasabi_stock_correct"
+              name="Koreksi Stok"
+              parent="menu_wasabi_kitchen"
+              action="action_wasabi_stock_correction"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_koki"/>
+
+    <menuitem id="menu_wasabi_stock_log"
+              name="Log Perubahan Stok"
+              parent="menu_wasabi_kitchen"
+              action="action_wasabi_stock_log"
+              sequence="30"
+              groups="wasabi_kitchen_vanilla.group_wasabi_koki"/>
+
+    <!-- =====================================================
+         3) POINT OF SALE — billing & pembayaran (kasir)
+         ===================================================== -->
+    <menuitem id="menu_wasabi_pos"
+              name="Point of Sale"
+              parent="menu_wasabi_root"
+              sequence="20"/>
+
+    <menuitem id="menu_wasabi_billing"
+              name="Buka Billing"
+              parent="menu_wasabi_pos"
+              action="action_wasabi_billing"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_kasir"/>
+
+    <menuitem id="menu_wasabi_transaction_list"
+              name="Riwayat Transaksi"
+              parent="menu_wasabi_pos"
+              action="action_wasabi_transaction"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_kasir"/>
+
+    <!-- =====================================================
+         4) ORDERS — semua pesanan
+         ===================================================== -->
+    <menuitem id="menu_wasabi_orders"
+              name="Orders"
+              parent="menu_wasabi_root"
+              sequence="30"/>
+
+    <menuitem id="menu_wasabi_order_all"
+              name="Semua Pesanan"
+              parent="menu_wasabi_orders"
+              action="action_wasabi_order"
+              sequence="10"/>
+
+    <menuitem id="menu_wasabi_order_active"
+              name="Pesanan Aktif"
+              parent="menu_wasabi_orders"
+              action="action_wasabi_order_active"
+              sequence="20"/>
+
+    <!-- =====================================================
+         5) MASTER DATA
+         ===================================================== -->
+    <menuitem id="menu_wasabi_master"
+              name="Master Data"
+              parent="menu_wasabi_root"
+              sequence="40"/>
+
+    <menuitem id="menu_wasabi_menu_item"
+              name="Menu &amp; Stok"
+              parent="menu_wasabi_master"
+              action="action_wasabi_menu_item"
+              sequence="10"/>
+
+    <menuitem id="menu_wasabi_category"
+              name="Kategori"
+              parent="menu_wasabi_master"
+              action="action_wasabi_category"
+              sequence="20"/>
+
+    <menuitem id="menu_wasabi_table"
+              name="Meja Restoran"
+              parent="menu_wasabi_master"
+              action="action_wasabi_table"
+              sequence="30"/>
+
+    <!-- =====================================================
+         6) REPORTS — analitik & ekspor (manager only)
+         ===================================================== -->
+    <menuitem id="menu_wasabi_reports"
+              name="Reports"
+              parent="menu_wasabi_root"
+              sequence="50"
+              groups="wasabi_kitchen_vanilla.group_wasabi_manager"/>
+
+    <menuitem id="menu_wasabi_report_history"
+              name="Riwayat Transaksi (Analitik)"
+              parent="menu_wasabi_reports"
+              action="action_wasabi_transaction_analytics"
+              sequence="10"/>
+
+    <menuitem id="menu_wasabi_report_export"
+              name="Laporan &amp; Ekspor"
+              parent="menu_wasabi_reports"
+              action="action_wasabi_export_wizard"
+              sequence="20"/>
+
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!--
+        Wasabi Kitchen — OWL templates placeholder.
+        File ini disertakan agar bundle assets web.assets_backend lengkap,
+        namun saat ini kita memakai pure XML kanban (templates inline di view).
+        Tambahkan custom OWL component di sini bila dibutuhkan ke depan.
+    -->
+</templates>

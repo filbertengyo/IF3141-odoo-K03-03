@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         TRANSACTION — Tree
+         ===================================================== -->
+    <record id="view_wasabi_transaction_tree" model="ir.ui.view">
+        <field name="name">wasabi.transaction.tree</field>
+        <field name="model">wasabi.transaction</field>
+        <field name="arch" type="xml">
+            <tree string="Riwayat Transaksi" sample="1" create="false">
+                <field name="transaction_number"/>
+                <field name="paid_at"/>
+                <field name="order_number"/>
+                <field name="table_number" string="Meja"/>
+                <field name="payment_method" widget="badge"
+                       decoration-info="payment_method == 'cash'"
+                       decoration-success="payment_method == 'qris'"/>
+                <field name="total_amount"/>
+                <field name="amount_received" optional="hide"/>
+                <field name="change_amount" optional="hide"/>
+                <field name="staff_id"/>
+                <field name="currency_id" column_invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         TRANSACTION — Form
+         ===================================================== -->
+    <record id="view_wasabi_transaction_form" model="ir.ui.view">
+        <field name="name">wasabi.transaction.form</field>
+        <field name="model">wasabi.transaction</field>
+        <field name="arch" type="xml">
+            <form string="Transaksi" create="false">
+                <header>
+                    <button name="action_print_receipt" type="object"
+                            string="🖨 Cetak Struk" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="transaction_number" class="oe_edit_only"/>
+                        <h1><field name="transaction_number" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="order_id" readonly="1"/>
+                            <field name="table_number" readonly="1"/>
+                            <field name="staff_id" readonly="1"/>
+                            <field name="paid_at" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="payment_method" readonly="1"/>
+                            <field name="total_amount" readonly="1"/>
+                            <field name="amount_received" readonly="1"
+                                   invisible="payment_method != 'cash'"/>
+                            <field name="change_amount" readonly="1"
+                                   invisible="payment_method != 'cash'"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <separator string="Catatan"/>
+                    <field name="notes" readonly="1"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         TRANSACTION — Pivot (analytics)
+         ===================================================== -->
+    <record id="view_wasabi_transaction_pivot" model="ir.ui.view">
+        <field name="name">wasabi.transaction.pivot</field>
+        <field name="model">wasabi.transaction</field>
+        <field name="arch" type="xml">
+            <pivot string="Analitik Transaksi">
+                <field name="paid_at" interval="day" type="row"/>
+                <field name="payment_method" type="col"/>
+                <field name="total_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         TRANSACTION — Graph
+         ===================================================== -->
+    <record id="view_wasabi_transaction_graph" model="ir.ui.view">
+        <field name="name">wasabi.transaction.graph</field>
+        <field name="model">wasabi.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="Tren Penjualan" type="line">
+                <field name="paid_at" interval="day"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         TRANSACTION — Search
+         ===================================================== -->
+    <record id="view_wasabi_transaction_search" model="ir.ui.view">
+        <field name="name">wasabi.transaction.search</field>
+        <field name="model">wasabi.transaction</field>
+        <field name="arch" type="xml">
+            <search string="Cari Transaksi">
+                <field name="transaction_number"/>
+                <field name="order_number"/>
+                <field name="table_number"/>
+                <field name="staff_id"/>
+                <separator/>
+                <filter string="Tunai" name="filter_cash" domain="[('payment_method','=','cash')]"/>
+                <filter string="QRIS" name="filter_qris" domain="[('payment_method','=','qris')]"/>
+                <separator/>
+                <filter string="Hari Ini" name="filter_today"
+                        domain="[('paid_at','&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="7 Hari Terakhir" name="filter_week"
+                        domain="[('paid_at','&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Bulan Ini" name="filter_month"
+                        domain="[('paid_at','&gt;=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Metode Bayar" name="group_method" context="{'group_by': 'payment_method'}"/>
+                    <filter string="Kasir" name="group_staff" context="{'group_by': 'staff_id'}"/>
+                    <filter string="Tanggal" name="group_date" context="{'group_by': 'paid_at:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_wasabi_transaction" model="ir.actions.act_window">
+        <field name="name">Riwayat Transaksi</field>
+        <field name="res_model">wasabi.transaction</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_wasabi_transaction_search"/>
+        <field name="context">{'search_default_filter_month': 1}</field>
+    </record>
+
+    <record id="action_wasabi_transaction_analytics" model="ir.actions.act_window">
+        <field name="name">Analitik Transaksi</field>
+        <field name="res_model">wasabi.transaction</field>
+        <field name="view_mode">pivot,graph,tree,form</field>
+        <field name="search_view_id" ref="view_wasabi_transaction_search"/>
+        <field name="context">{'search_default_filter_month': 1}</field>
+    </record>
+
+</odoo>

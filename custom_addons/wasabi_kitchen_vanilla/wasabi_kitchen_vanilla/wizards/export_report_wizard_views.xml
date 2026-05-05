@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_wasabi_export_report_wizard_form" model="ir.ui.view">
+        <field name="name">wasabi.export.report.wizard.form</field>
+        <field name="model">wasabi.export.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Laporan &amp; Ekspor Transaksi" class="o_wasabi_export_form">
+                <header>
+                    <button name="action_preview" type="object"
+                            string="📋 Tampilkan Data" class="btn-secondary"/>
+                    <button name="action_export" type="object"
+                            string="📥 Ekspor &amp; Download" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Laporan Transaksi</h1>
+                        <h3 class="text-muted">
+                            Filter rentang tanggal, tinjau ringkasan, lalu ekspor ke spreadsheet untuk analisis.
+                        </h3>
+                    </div>
+
+                    <group string="📅 Rentang Tanggal">
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="payment_method"/>
+                            <field name="staff_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <group string="📦 Format Ekspor">
+                        <group>
+                            <field name="export_format" widget="radio"/>
+                            <field name="include_items"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-success o_wasabi_preview_alert" role="alert"
+                         invisible="transaction_count == 0">
+                        <i class="fa fa-info-circle me-2"/>
+                        <strong><field name="transaction_count" readonly="1" nolabel="1"/> transaksi</strong>
+                        akan diekspor untuk periode terpilih ·
+                        Total revenue:
+                        <strong><field name="total_revenue" readonly="1" nolabel="1" widget="monetary"/></strong>
+                        <field name="currency_id" invisible="1"/>
+                    </div>
+
+                    <div class="alert alert-warning" role="alert"
+                         invisible="transaction_count != 0">
+                        <i class="fa fa-exclamation-triangle me-2"/>
+                        Tidak ada transaksi pada rentang tanggal ini.
+                    </div>
+
+                    <field name="file_data" filename="file_name" invisible="not file_data"/>
+                    <field name="file_name" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wasabi_export_wizard" model="ir.actions.act_window">
+        <field name="name">Laporan &amp; Ekspor</field>
+        <field name="res_model">wasabi.export.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_wasabi_export_report_wizard_form"/>
+        <field name="target">current</field>
+    </record>
+
+</odoo>

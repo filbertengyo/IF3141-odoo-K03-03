@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         TABLE — Tree
+         ===================================================== -->
+    <record id="view_wasabi_table_tree" model="ir.ui.view">
+        <field name="name">wasabi.table.tree</field>
+        <field name="model">wasabi.table</field>
+        <field name="arch" type="xml">
+            <tree string="Daftar Meja" sample="1">
+                <field name="table_number"/>
+                <field name="floor"/>
+                <field name="capacity" string="Pax"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'available'"
+                       decoration-warning="status == 'reserved'"
+                       decoration-info="status == 'occupied'"/>
+                <field name="active_order_id" optional="show"/>
+                <field name="qr_token" optional="hide"/>
+                <field name="is_active" widget="boolean_toggle"/>
+                <button name="action_view_qr_code" type="object"
+                        icon="fa-qrcode" string="QR" class="btn-link"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         TABLE — Kanban (floor plan)
+         ===================================================== -->
+    <record id="view_wasabi_table_kanban" model="ir.ui.view">
+        <field name="name">wasabi.table.kanban</field>
+        <field name="model">wasabi.table</field>
+        <field name="arch" type="xml">
+            <kanban class="o_wasabi_table_kanban" sample="1">
+                <field name="id"/>
+                <field name="table_number"/>
+                <field name="status"/>
+                <field name="capacity"/>
+                <field name="floor"/>
+                <field name="active_order_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click o_wasabi_table_card o_status_#{record.status.raw_value}">
+                            <div class="o_wasabi_table_top">
+                                <span class="o_wasabi_table_label">Table</span>
+                                <span class="o_wasabi_table_floor"><field name="floor"/></span>
+                            </div>
+                            <div class="o_wasabi_table_num">
+                                <t t-esc="record.table_number.raw_value &lt; 10 ? '0' + record.table_number.raw_value : record.table_number.raw_value"/>
+                            </div>
+                            <div class="o_wasabi_table_cap">
+                                <i class="fa fa-users"/> <field name="capacity"/> pax
+                            </div>
+                            <div class="o_wasabi_table_status">
+                                <span t-attf-class="o_status_pill o_status_pill_#{record.status.raw_value}">
+                                    <span class="o_dot"/>
+                                    <t t-if="record.status.raw_value == 'available'">Tersedia</t>
+                                    <t t-if="record.status.raw_value == 'occupied'">Terisi</t>
+                                    <t t-if="record.status.raw_value == 'reserved'">Dipesan</t>
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         TABLE — Form
+         ===================================================== -->
+    <record id="view_wasabi_table_form" model="ir.ui.view">
+        <field name="name">wasabi.table.form</field>
+        <field name="model">wasabi.table</field>
+        <field name="arch" type="xml">
+            <form string="Meja Restoran">
+                <header>
+                    <button name="action_view_qr_code" type="object"
+                            string="Lihat QR Code" class="btn-primary" icon="fa-qrcode"/>
+                    <button name="action_regenerate_qr_token" type="object"
+                            string="Regenerate Token" class="btn-secondary"
+                            confirm="Yakin ingin regenerate? QR code lama akan invalid."/>
+                    <button name="action_view_active_order" type="object"
+                            string="Lihat Pesanan Aktif" class="btn-link"
+                            invisible="not active_order_id"/>
+                    <field name="status" widget="statusbar"
+                           statusbar_visible="available,occupied,reserved"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Nonaktif" bg_color="text-bg-danger"
+                            invisible="is_active"/>
+                    <div class="oe_title">
+                        <label for="table_number" class="oe_edit_only"/>
+                        <h1>Meja <field name="table_number"/></h1>
+                    </div>
+                    <group>
+                        <group string="Informasi Meja">
+                            <field name="floor"/>
+                            <field name="capacity"/>
+                            <field name="is_active"/>
+                            <field name="active_order_id" readonly="1"/>
+                        </group>
+                        <group string="QR Ordering">
+                            <field name="qr_token" readonly="1"/>
+                            <field name="qr_url" widget="url" readonly="1"/>
+                        </group>
+                    </group>
+                    <separator string="Catatan"/>
+                    <field name="notes" placeholder="Catatan tentang meja..."/>
+
+                    <notebook>
+                        <page string="Riwayat Pesanan" name="orders">
+                            <field name="order_ids" readonly="1">
+                                <tree>
+                                    <field name="order_number"/>
+                                    <field name="create_date"/>
+                                    <field name="item_count"/>
+                                    <field name="total_price"/>
+                                    <field name="status" widget="badge"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         TABLE — Search
+         ===================================================== -->
+    <record id="view_wasabi_table_search" model="ir.ui.view">
+        <field name="name">wasabi.table.search</field>
+        <field name="model">wasabi.table</field>
+        <field name="arch" type="xml">
+            <search string="Cari Meja">
+                <field name="table_number"/>
+                <field name="floor"/>
+                <separator/>
+                <filter string="Tersedia" name="filter_available" domain="[('status','=','available')]"/>
+                <filter string="Terisi" name="filter_occupied" domain="[('status','=','occupied')]"/>
+                <filter string="Dipesan" name="filter_reserved" domain="[('status','=','reserved')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Lantai" name="group_floor" context="{'group_by': 'floor'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_wasabi_table" model="ir.actions.act_window">
+        <field name="name">Meja Restoran</field>
+        <field name="res_model">wasabi.table</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="view_wasabi_table_search"/>
+    </record>
+
+</odoo>

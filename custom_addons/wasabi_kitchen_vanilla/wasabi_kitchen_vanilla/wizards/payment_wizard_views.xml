@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         PAYMENT WIZARD — Konfirmasi Pembayaran (UC-10)
+         ===================================================== -->
+    <record id="view_wasabi_payment_wizard_form" model="ir.ui.view">
+        <field name="name">wasabi.payment.wizard.form</field>
+        <field name="model">wasabi.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Konfirmasi Pembayaran" class="o_wasabi_pay_form">
+                <header>
+                    <button name="action_confirm_payment" type="object"
+                            string="✓ Konfirmasi &amp; Tutup Transaksi"
+                            class="btn-primary btn-lg"/>
+                    <button special="cancel" string="Batal" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="o_wasabi_pay_head">
+                        <div>
+                            <div class="o_wasabi_label">Tagihan untuk</div>
+                            <h1>Meja <field name="table_number" readonly="1" nolabel="1"/></h1>
+                            <div class="o_wasabi_meta">
+                                <field name="order_number" readonly="1" nolabel="1"/>
+                                · <field name="item_count" readonly="1" nolabel="1"/> item
+                            </div>
+                        </div>
+                        <div class="o_wasabi_pay_total">
+                            <div class="o_wasabi_label">Total Bayar</div>
+                            <h1><field name="total_amount" readonly="1" nolabel="1" widget="monetary"/></h1>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Pilih Metode Pembayaran" colspan="2">
+                            <field name="payment_method" widget="radio" nolabel="1" class="o_wasabi_pay_method"/>
+                        </group>
+                    </group>
+
+                    <group invisible="payment_method != 'cash'">
+                        <group string="Detail Pembayaran Tunai">
+                            <field name="amount_received"
+                                   class="o_wasabi_pay_input"/>
+                            <field name="change_amount" readonly="1"
+                                   class="o_wasabi_pay_change"/>
+                        </group>
+                        <group string="Quick Amount">
+                            <button name="set_quick_50k" type="object" string="50.000" class="btn-sm btn-light"/>
+                            <button name="set_quick_100k" type="object" string="100.000" class="btn-sm btn-light"/>
+                            <button name="set_quick_200k" type="object" string="200.000" class="btn-sm btn-light"/>
+                            <button name="set_quick_exact" type="object" string="Uang Pas" class="btn-sm btn-light"/>
+                        </group>
+                    </group>
+
+                    <group invisible="payment_method != 'qris'">
+                        <div class="o_wasabi_qris_panel">
+                            <div class="o_wasabi_label">Tunjukkan QR ke pelanggan</div>
+                            <div class="o_wasabi_qris_mock"></div>
+                            <div class="o_wasabi_qris_amount">
+                                <field name="total_amount" readonly="1" nolabel="1" widget="monetary"/>
+                            </div>
+                            <div class="o_wasabi_qris_providers">
+                                QRIS · GoPay · OVO · DANA · ShopeePay · LinkAja
+                            </div>
+                        </div>
+                    </group>
+
+                    <separator string="Catatan"/>
+                    <field name="notes" placeholder="Catatan tambahan (opsional)..."/>
+
+                    <field name="order_id" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wasabi_payment_wizard" model="ir.actions.act_window">
+        <field name="name">Konfirmasi Pembayaran</field>
+        <field name="res_model">wasabi.payment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_wasabi_payment_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

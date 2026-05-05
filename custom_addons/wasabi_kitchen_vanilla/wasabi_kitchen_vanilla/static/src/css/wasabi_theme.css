@@ -1,0 +1,231 @@
+/* =============================================================
+   Wasabi Kitchen — Odoo Backend Theme
+   Palette: aubergine (#714B67) + wasabi green (#7BAE3F)
+   ============================================================= */
+
+:root {
+    --wk-primary:        #714B67;
+    --wk-primary-dark:   #5b3c54;
+    --wk-primary-light:  #8c6783;
+    --wk-accent:         #7BAE3F;
+    --wk-accent-soft:    #e8f1d9;
+    --wk-accent-dark:    #5b8a25;
+
+    --wk-status-pending: #f59e0b;
+    --wk-status-cooking: #2563eb;
+    --wk-status-ready:   #16a34a;
+    --wk-status-paid:    #6b7280;
+    --wk-status-rejected:#dc2626;
+
+    --wk-radius:         6px;
+    --wk-radius-lg:      10px;
+
+    --wk-shadow-sm:      0 1px 2px rgba(20,14,24,.04), 0 1px 1px rgba(20,14,24,.03);
+    --wk-shadow-md:      0 2px 8px rgba(20,14,24,.06), 0 4px 16px rgba(20,14,24,.04);
+}
+
+/* =============================================================
+   CATEGORY KANBAN
+   ============================================================= */
+.o_wasabi_category_kanban .o_wasabi_cat_card {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: var(--wk-radius-lg);
+    border: 1px solid #e3e1e6;
+    box-shadow: var(--wk-shadow-sm);
+    min-height: 80px;
+    transition: all .15s;
+}
+.o_wasabi_category_kanban .o_wasabi_cat_card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--wk-shadow-md);
+    border-color: var(--wk-primary-light);
+}
+.o_wasabi_category_kanban .o_wasabi_cat_icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: grid; place-items: center;
+    background: var(--wk-accent-soft);
+    font-size: 28px;
+    line-height: 1;
+}
+.o_wasabi_category_kanban .o_wasabi_cat_body strong {
+    display: block;
+    font-size: 16px;
+    color: #1f1d24;
+    margin-bottom: 2px;
+}
+.o_wasabi_category_kanban .o_wasabi_cat_meta {
+    color: #6c7079;
+    font-size: 12px;
+}
+
+/* =============================================================
+   MENU ITEM KANBAN
+   ============================================================= */
+.o_wasabi_menu_kanban .o_wasabi_menu_card {
+    overflow: hidden;
+    border-radius: var(--wk-radius-lg);
+    border: 1px solid #e3e1e6;
+    background: #fff;
+    box-shadow: var(--wk-shadow-sm);
+    transition: all .15s;
+}
+.o_wasabi_menu_kanban .o_wasabi_menu_card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--wk-shadow-md);
+}
+.o_wasabi_menu_kanban .o_wasabi_menu_photo {
+    height: 130px;
+    position: relative;
+    display: grid; place-items: center;
+}
+.o_wasabi_menu_kanban .o_wasabi_glyph {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: rgba(0,0,0,.18);
+    letter-spacing: -.02em;
+}
+.o_color_peach { background: linear-gradient(135deg, #fab9a3, #ee7c5e); }
+.o_color_green { background: linear-gradient(135deg, #c5dba1, var(--wk-accent)); }
+.o_color_dark  { background: linear-gradient(135deg, #5e4334, #3a2820); }
+.o_color_dark .o_wasabi_glyph { color: rgba(255,255,255,.20); }
+.o_color_tea   { background: linear-gradient(135deg, #d4e9b5, #92b572); }
+.o_color_broth { background: linear-gradient(135deg, #efb87c, #b56e3e); }
+.o_color_cream { background: linear-gradient(135deg, #ffe9c5, #f7c873); }
+
+.o_wasabi_badge {
+    position: absolute;
+    top: 10px; right: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    background: #fff;
+}
+.o_badge_out { background: #fee2e2; color: #991b1b; }
+.o_badge_low { background: #fef3c7; color: #92400e; }
+
+.o_wasabi_menu_body { padding: 12px 14px; }
+.o_wasabi_menu_name { display: block; font-size: 15px; color: #1f1d24; }
+.o_wasabi_menu_price {
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--wk-primary);
+    font-size: 14px;
+}
+.o_wasabi_menu_meta {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #6c7079;
+}
+.o_meta_unlimited { color: var(--wk-accent-dark); font-weight: 600; }
+
+/* =============================================================
+   TABLE FLOOR PLAN KANBAN
+   ============================================================= */
+.o_wasabi_table_kanban .o_wasabi_table_card {
+    aspect-ratio: 1;
+    background: #fff;
+    border: 1px solid #e3e1e6;
+    border-radius: var(--wk-radius-lg);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all .15s;
+    position: relative;
+    min-height: 140px;
+}
+.o_wasabi_table_kanban .o_wasabi_table_card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--wk-shadow-md);
+}
+.o_wasabi_table_top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #6c7079;
+    font-weight: 600;
+}
+.o_wasabi_table_num {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #1f1d24;
+    line-height: 1;
+    margin: 8px 0;
+}
+.o_wasabi_table_cap {
+    font-size: 11px;
+    color: #6c7079;
+}
+.o_wasabi_table_status { margin-top: auto; }
+
+.o_wasabi_table_card.o_status_occupied {
+    background: linear-gradient(135deg, #fff, #fdf4f4);
+    border-color: #fecaca;
+}
+.o_wasabi_table_card.o_status_occupied .o_wasabi_table_num { color: var(--wk-primary-dark); }
+.o_wasabi_table_card.o_status_reserved {
+    background: linear-gradient(135deg, #fff, #fef9c3);
+    border-color: #fde68a;
+}
+
+.o_status_pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+.o_status_pill .o_dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.o_status_pill_available { background: var(--wk-accent-soft); color: var(--wk-accent-dark); }
+.o_status_pill_available .o_dot { background: var(--wk-accent-dark); }
+.o_status_pill_occupied  { background: #fce7f3; color: #9d174d; }
+.o_status_pill_occupied  .o_dot { background: #ec4899; }
+.o_status_pill_reserved  { background: #fef3c7; color: #92400e; }
+.o_status_pill_reserved  .o_dot { background: #f59e0b; }
+.o_status_pill_pending   { background: #fef3c7; color: #92400e; }
+.o_status_pill_pending   .o_dot { background: #f59e0b; }
+.o_status_pill_cooking   { background: #dbeafe; color: #1e40af; }
+.o_status_pill_cooking   .o_dot { background: #2563eb; }
+.o_status_pill_ready     { background: #dcfce7; color: #14532d; }
+.o_status_pill_ready     .o_dot { background: #16a34a; }
+
+/* =============================================================
+   EXPORT WIZARD
+   ============================================================= */
+.o_wasabi_export_form .o_wasabi_preview_alert {
+    border-radius: var(--wk-radius-lg);
+    background: var(--wk-accent-soft);
+    border-color: var(--wk-accent);
+    color: var(--wk-accent-dark);
+    padding: 14px 16px;
+}
+
+/* =============================================================
+   APP MENU ICON STYLING (header brand)
+   ============================================================= */
+.o_main_navbar .o_navbar_apps_menu .dropdown-toggle:has(span:contains("Wasabi Kitchen")) {
+    background: var(--wk-primary);
+    color: #fff;
+}

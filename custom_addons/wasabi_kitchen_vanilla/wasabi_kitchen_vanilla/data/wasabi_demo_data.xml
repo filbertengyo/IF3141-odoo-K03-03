@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ===========================================
+             KATEGORI MENU
+             =========================================== -->
+        <record id="category_sushi" model="wasabi.category">
+            <field name="name">Sushi</field>
+            <field name="icon">🍣</field>
+            <field name="sequence">10</field>
+            <field name="description">Sushi dan sashimi segar dari ikan pilihan.</field>
+        </record>
+        <record id="category_ramen" model="wasabi.category">
+            <field name="name">Ramen</field>
+            <field name="icon">🍜</field>
+            <field name="sequence">20</field>
+            <field name="description">Mie kuah khas Jepang dengan kaldu autentik.</field>
+        </record>
+        <record id="category_bento" model="wasabi.category">
+            <field name="name">Bento</field>
+            <field name="icon">🍱</field>
+            <field name="sequence">30</field>
+            <field name="description">Set menu lengkap dalam satu kotak.</field>
+        </record>
+        <record id="category_minuman" model="wasabi.category">
+            <field name="name">Minuman</field>
+            <field name="icon">🍵</field>
+            <field name="sequence">40</field>
+            <field name="description">Teh, jus, dan minuman pendamping.</field>
+        </record>
+        <record id="category_dessert" model="wasabi.category">
+            <field name="name">Dessert</field>
+            <field name="icon">🍡</field>
+            <field name="sequence">50</field>
+            <field name="description">Pencuci mulut khas Jepang.</field>
+        </record>
+
+        <!-- ===========================================
+             MENU ITEMS
+             =========================================== -->
+        <record id="menu_salmon_sashimi" model="wasabi.menu.item">
+            <field name="name">Salmon Sashimi</field>
+            <field name="sku">MN-001</field>
+            <field name="category_id" ref="category_sushi"/>
+            <field name="price">65000</field>
+            <field name="remaining_stock">12</field>
+            <field name="description">Irisan salmon Norwegia segar dengan wasabi parut dan kecap asin premium.</field>
+            <field name="photo_color">peach</field>
+            <field name="glyph">鮭</field>
+        </record>
+        <record id="menu_spicy_tuna_roll" model="wasabi.menu.item">
+            <field name="name">Spicy Tuna Roll</field>
+            <field name="sku">MN-002</field>
+            <field name="category_id" ref="category_sushi"/>
+            <field name="price">48000</field>
+            <field name="remaining_stock">4</field>
+            <field name="description">Gulungan tuna pedas dengan saus mayo Jepang, ditaburi tobiko dan daun bawang.</field>
+            <field name="photo_color">dark</field>
+            <field name="glyph">巻</field>
+        </record>
+        <record id="menu_wasabi_set" model="wasabi.menu.item">
+            <field name="name">Wasabi Set (2 pcs)</field>
+            <field name="sku">MN-003</field>
+            <field name="category_id" ref="category_sushi"/>
+            <field name="price">55000</field>
+            <field name="remaining_stock">8</field>
+            <field name="description">Sepasang sushi nigiri dengan topping pilihan koki — sajian khas Wasabi Kitchen.</field>
+            <field name="photo_color">green</field>
+            <field name="glyph">寿</field>
+        </record>
+        <record id="menu_california_roll" model="wasabi.menu.item">
+            <field name="name">California Roll</field>
+            <field name="sku">MN-004</field>
+            <field name="category_id" ref="category_sushi"/>
+            <field name="price">42000</field>
+            <field name="remaining_stock">15</field>
+            <field name="description">Crab stick, alpukat, mentimun dilapisi nasi sushi dan tobiko.</field>
+            <field name="photo_color">green</field>
+            <field name="glyph">巻</field>
+        </record>
+
+        <record id="menu_chicken_katsu_ramen" model="wasabi.menu.item">
+            <field name="name">Chicken Katsu Ramen</field>
+            <field name="sku">MN-101</field>
+            <field name="category_id" ref="category_ramen"/>
+            <field name="price">72000</field>
+            <field name="remaining_stock">18</field>
+            <field name="description">Mie ramen kuah kaldu ayam pedas, disajikan dengan ayam katsu, telur ramen, dan nori.</field>
+            <field name="photo_color">broth</field>
+            <field name="glyph">麺</field>
+        </record>
+        <record id="menu_tonkotsu_ramen" model="wasabi.menu.item">
+            <field name="name">Tonkotsu Ramen</field>
+            <field name="sku">MN-102</field>
+            <field name="category_id" ref="category_ramen"/>
+            <field name="price">78000</field>
+            <field name="remaining_stock">10</field>
+            <field name="description">Ramen kuah putih creamy dari rebusan tulang babi, dengan chashu dan ajitsuke tamago.</field>
+            <field name="photo_color">broth</field>
+            <field name="glyph">豚</field>
+        </record>
+        <record id="menu_miso_soup" model="wasabi.menu.item">
+            <field name="name">Miso Soup</field>
+            <field name="sku">MN-103</field>
+            <field name="category_id" ref="category_ramen"/>
+            <field name="price">18000</field>
+            <field name="remaining_stock">0</field>
+            <field name="is_available">False</field>
+            <field name="description">Sup miso tradisional dengan tahu sutera dan rumput laut wakame.</field>
+            <field name="photo_color">tea</field>
+            <field name="glyph">汁</field>
+        </record>
+
+        <record id="menu_chicken_teriyaki_bento" model="wasabi.menu.item">
+            <field name="name">Chicken Teriyaki Bento</field>
+            <field name="sku">MN-201</field>
+            <field name="category_id" ref="category_bento"/>
+            <field name="price">68000</field>
+            <field name="remaining_stock">14</field>
+            <field name="description">Set lengkap: nasi, ayam teriyaki, gyoza, salad, miso soup, dan acar.</field>
+            <field name="photo_color">peach</field>
+            <field name="glyph">弁</field>
+        </record>
+        <record id="menu_salmon_bento" model="wasabi.menu.item">
+            <field name="name">Salmon Bento</field>
+            <field name="sku">MN-202</field>
+            <field name="category_id" ref="category_bento"/>
+            <field name="price">85000</field>
+            <field name="remaining_stock">9</field>
+            <field name="description">Set bento dengan salmon panggang saus terriyaki, nasi, dan side dishes.</field>
+            <field name="photo_color">peach</field>
+            <field name="glyph">鮭</field>
+        </record>
+
+        <record id="menu_ocha" model="wasabi.menu.item">
+            <field name="name">Ocha (Hot/Iced)</field>
+            <field name="sku">MN-301</field>
+            <field name="category_id" ref="category_minuman"/>
+            <field name="price">12000</field>
+            <field name="remaining_stock">-1</field>
+            <field name="description">Teh hijau Jepang seduh segar, free refill untuk dine-in.</field>
+            <field name="photo_color">tea</field>
+            <field name="glyph">茶</field>
+        </record>
+        <record id="menu_ramune" model="wasabi.menu.item">
+            <field name="name">Ramune Soda</field>
+            <field name="sku">MN-302</field>
+            <field name="category_id" ref="category_minuman"/>
+            <field name="price">22000</field>
+            <field name="remaining_stock">24</field>
+            <field name="description">Soda khas Jepang dengan tutup marble unik. Tersedia rasa original, melon, strawberry.</field>
+            <field name="photo_color">tea</field>
+            <field name="glyph">水</field>
+        </record>
+        <record id="menu_matcha_latte" model="wasabi.menu.item">
+            <field name="name">Matcha Latte</field>
+            <field name="sku">MN-303</field>
+            <field name="category_id" ref="category_minuman"/>
+            <field name="price">28000</field>
+            <field name="remaining_stock">20</field>
+            <field name="description">Matcha grade premium dari Uji disajikan dengan susu fresh.</field>
+            <field name="photo_color">green</field>
+            <field name="glyph">抹</field>
+        </record>
+
+        <record id="menu_mochi_ice" model="wasabi.menu.item">
+            <field name="name">Mochi Ice Cream (3 pcs)</field>
+            <field name="sku">MN-401</field>
+            <field name="category_id" ref="category_dessert"/>
+            <field name="price">35000</field>
+            <field name="remaining_stock">16</field>
+            <field name="description">Mochi isi es krim, varian: green tea, vanilla, strawberry.</field>
+            <field name="photo_color">cream</field>
+            <field name="glyph">餅</field>
+        </record>
+        <record id="menu_dorayaki" model="wasabi.menu.item">
+            <field name="name">Dorayaki</field>
+            <field name="sku">MN-402</field>
+            <field name="category_id" ref="category_dessert"/>
+            <field name="price">25000</field>
+            <field name="remaining_stock">11</field>
+            <field name="description">Pancake Jepang isi pasta kacang merah manis.</field>
+            <field name="photo_color">cream</field>
+            <field name="glyph">焼</field>
+        </record>
+
+        <!-- ===========================================
+             MEJA — 12 meja dengan QR token unik
+             =========================================== -->
+        <record id="table_01" model="wasabi.table">
+            <field name="table_number">1</field>
+            <field name="qr_token">wsb-tbl-01-jtg2026</field>
+            <field name="capacity">2</field>
+            <field name="floor">Lantai 1</field>
+            <field name="status">occupied</field>
+        </record>
+        <record id="table_02" model="wasabi.table">
+            <field name="table_number">2</field>
+            <field name="qr_token">wsb-tbl-02-jtg2026</field>
+            <field name="capacity">4</field>
+            <field name="floor">Lantai 1</field>
+        </record>
+        <record id="table_03" model="wasabi.table">
+            <field name="table_number">3</field>
+            <field name="qr_token">wsb-tbl-03-jtg2026</field>
+            <field name="capacity">4</field>
+            <field name="floor">Lantai 1</field>
+        </record>
+        <record id="table_04" model="wasabi.table">
+            <field name="table_number">4</field>
+            <field name="qr_token">wsb-tbl-04-jtg2026</field>
+            <field name="capacity">2</field>
+            <field name="floor">Lantai 1</field>
+            <field name="status">occupied</field>
+        </record>
+        <record id="table_05" model="wasabi.table">
+            <field name="table_number">5</field>
+            <field name="qr_token">wsb-tbl-05-jtg2026</field>
+            <field name="capacity">6</field>
+            <field name="floor">Lantai 1</field>
+        </record>
+        <record id="table_06" model="wasabi.table">
+            <field name="table_number">6</field>
+            <field name="qr_token">wsb-tbl-06-jtg2026</field>
+            <field name="capacity">4</field>
+            <field name="floor">Lantai 1</field>
+        </record>
+        <record id="table_07" model="wasabi.table">
+            <field name="table_number">7</field>
+            <field name="qr_token">wsb-tbl-07-jtg2026</field>
+            <field name="capacity">4</field>
+            <field name="floor">Lantai 1</field>
+            <field name="status">occupied</field>
+        </record>
+        <record id="table_08" model="wasabi.table">
+            <field name="table_number">8</field>
+            <field name="qr_token">wsb-tbl-08-jtg2026</field>
+            <field name="capacity">2</field>
+            <field name="floor">Lantai 2</field>
+        </record>
+        <record id="table_09" model="wasabi.table">
+            <field name="table_number">9</field>
+            <field name="qr_token">wsb-tbl-09-jtg2026</field>
+            <field name="capacity">4</field>
+            <field name="floor">Lantai 2</field>
+            <field name="status">occupied</field>
+        </record>
+        <record id="table_10" model="wasabi.table">
+            <field name="table_number">10</field>
+            <field name="qr_token">wsb-tbl-10-jtg2026</field>
+            <field name="capacity">6</field>
+            <field name="floor">Lantai 2</field>
+        </record>
+        <record id="table_11" model="wasabi.table">
+            <field name="table_number">11</field>
+            <field name="qr_token">wsb-tbl-11-jtg2026</field>
+            <field name="capacity">4</field>
+            <field name="floor">Lantai 2</field>
+            <field name="status">occupied</field>
+        </record>
+        <record id="table_12" model="wasabi.table">
+            <field name="table_number">12</field>
+            <field name="qr_token">wsb-tbl-12-jtg2026</field>
+            <field name="capacity">8</field>
+            <field name="floor">Lantai 2</field>
+            <field name="status">occupied</field>
+        </record>
+
+        <!-- ===========================================
+             SAMPLE ORDERS (untuk demo KDS langsung berisi)
+             =========================================== -->
+
+        <!-- Order 1: PENDING di Meja 04 -->
+        <record id="demo_order_1" model="wasabi.order">
+            <field name="table_id" ref="table_04"/>
+            <field name="status">pending</field>
+        </record>
+        <record id="demo_order_1_line_1" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_1"/>
+            <field name="menu_item_id" ref="menu_wasabi_set"/>
+            <field name="quantity">3</field>
+            <field name="unit_price">55000</field>
+        </record>
+        <record id="demo_order_1_line_2" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_1"/>
+            <field name="menu_item_id" ref="menu_ocha"/>
+            <field name="quantity">2</field>
+            <field name="unit_price">12000</field>
+        </record>
+
+        <!-- Order 2: COOKING di Meja 07 -->
+        <record id="demo_order_2" model="wasabi.order">
+            <field name="table_id" ref="table_07"/>
+            <field name="status">cooking</field>
+        </record>
+        <record id="demo_order_2_line_1" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_2"/>
+            <field name="menu_item_id" ref="menu_salmon_sashimi"/>
+            <field name="quantity">1</field>
+            <field name="unit_price">65000</field>
+            <field name="note">tanpa wasabi, dipisah</field>
+        </record>
+        <record id="demo_order_2_line_2" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_2"/>
+            <field name="menu_item_id" ref="menu_spicy_tuna_roll"/>
+            <field name="quantity">1</field>
+            <field name="unit_price">48000</field>
+        </record>
+        <record id="demo_order_2_line_3" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_2"/>
+            <field name="menu_item_id" ref="menu_chicken_katsu_ramen"/>
+            <field name="quantity">1</field>
+            <field name="unit_price">72000</field>
+            <field name="note">pedas level 3, extra telur</field>
+        </record>
+        <record id="demo_order_2_line_4" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_2"/>
+            <field name="menu_item_id" ref="menu_ocha"/>
+            <field name="quantity">2</field>
+            <field name="unit_price">12000</field>
+        </record>
+
+        <!-- Order 3: COOKING di Meja 09 -->
+        <record id="demo_order_3" model="wasabi.order">
+            <field name="table_id" ref="table_09"/>
+            <field name="status">cooking</field>
+        </record>
+        <record id="demo_order_3_line_1" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_3"/>
+            <field name="menu_item_id" ref="menu_tonkotsu_ramen"/>
+            <field name="quantity">2</field>
+            <field name="unit_price">78000</field>
+        </record>
+        <record id="demo_order_3_line_2" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_3"/>
+            <field name="menu_item_id" ref="menu_matcha_latte"/>
+            <field name="quantity">2</field>
+            <field name="unit_price">28000</field>
+        </record>
+
+        <!-- Order 4: READY di Meja 11 -->
+        <record id="demo_order_4" model="wasabi.order">
+            <field name="table_id" ref="table_11"/>
+            <field name="status">ready</field>
+        </record>
+        <record id="demo_order_4_line_1" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_4"/>
+            <field name="menu_item_id" ref="menu_california_roll"/>
+            <field name="quantity">2</field>
+            <field name="unit_price">42000</field>
+        </record>
+        <record id="demo_order_4_line_2" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_4"/>
+            <field name="menu_item_id" ref="menu_mochi_ice"/>
+            <field name="quantity">1</field>
+            <field name="unit_price">35000</field>
+        </record>
+
+        <!-- Order 5: READY di Meja 12 -->
+        <record id="demo_order_5" model="wasabi.order">
+            <field name="table_id" ref="table_12"/>
+            <field name="status">ready</field>
+        </record>
+        <record id="demo_order_5_line_1" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_5"/>
+            <field name="menu_item_id" ref="menu_chicken_teriyaki_bento"/>
+            <field name="quantity">3</field>
+            <field name="unit_price">68000</field>
+        </record>
+        <record id="demo_order_5_line_2" model="wasabi.order.item">
+            <field name="order_id" ref="demo_order_5"/>
+            <field name="menu_item_id" ref="menu_dorayaki"/>
+            <field name="quantity">2</field>
+            <field name="unit_price">25000</field>
+        </record>
+
+    </data>
+</odoo>
