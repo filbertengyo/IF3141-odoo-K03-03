@@ -55,9 +55,7 @@
         <field name="name" string="No. Order"/>
         <field name="table_id" string="Meja"/>
         <filter name="f_today" string="Hari Ini"
-                domain="[('date_order', '&gt;=',
-                  datetime.datetime.combine(context_today(),
-                  datetime.time(0, 0, 0)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                domain="[('date_order', '&gt;=', context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
         <filter name="f_pending" string="Pending"
                 domain="[('kds_status', '=', 'pending')]"/>
         <filter name="f_cooking" string="Sedang Dimasak"

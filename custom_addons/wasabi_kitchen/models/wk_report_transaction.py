@@ -19,6 +19,13 @@ class WKReportTransaction(models.TransientModel):
     total_orders = fields.Integer(string='Jumlah Order', readonly=True)
     total_revenue = fields.Float(string='Total Pendapatan', readonly=True)
     has_result = fields.Boolean(default=False)
+    currency_id = fields.Many2one(
+        'res.currency', compute='_compute_currency_id', readonly=True)
+
+    @api.depends('id')
+    def _compute_currency_id(self):
+        for rec in self:
+            rec.currency_id = self.env.company.currency_id
 
     def action_query(self):
         if self.date_end < self.date_start:

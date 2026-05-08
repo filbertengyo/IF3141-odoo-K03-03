@@ -14,8 +14,7 @@
             </group>
             <group string="Ringkasan" invisible="not has_result">
               <field name="total_orders" readonly="1"/>
-              <field name="total_revenue" readonly="1" widget="monetary"
-                     options="{'currency_field': false}"/>
+              <field name="total_revenue" readonly="1" widget="monetary"/>
             </group>
           </group>
           <div class="o_row mb-3">

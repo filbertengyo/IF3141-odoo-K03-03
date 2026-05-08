@@ -72,12 +72,27 @@ class WKBillingWizard(models.TransientModel):
         if not pm:
             raise UserError('Metode pembayaran tidak ditemukan pada sesi POS aktif.')
 
-        self.env['pos.payment'].create({
+        self.env['pos.payment'].sudo().create({
             'pos_order_id': order.id,
             'payment_method_id': pm.id,
             'amount': order.amount_total,
         })
-        order.write({'state': 'paid'})
+        order.sudo().write({'state': 'paid'})
+
+        # Decrement stock quants immediately so Browse Menu reflects real-time availability
+        location = self.env['stock.warehouse'].sudo().search([], limit=1).lot_stock_id
+        if location:
+            for line in order.lines:
+                product = line.product_id
+                if not product or product.type not in ('consu', 'product'):
+                    continue
+                quant = self.env['stock.quant'].sudo().search([
+                    ('product_id', '=', product.id),
+                    ('location_id', '=', location.id),
+                ], limit=1)
+                if quant:
+                    quant.sudo().write({'quantity': max(0.0, quant.quantity - line.qty)})
+
         self.write({'state': 'confirmed'})
         return {
             'type': 'ir.actions.act_window',
