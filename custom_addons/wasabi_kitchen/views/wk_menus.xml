@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
 
-  <menuitem id="wk_root" name="Wasabi Kitchen" sequence="2"/>
+  <menuitem id="wk_root" name="Wasabi Kitchen"
+            sequence="2" action="wk_action_kds"/>
+
+  <!-- ── Dashboard ── -->
+  <menuitem id="wk_menu_dashboard" name="Dashboard"
+            parent="wk_root" action="wk_action_kds" sequence="0"/>
 
   <!-- ── QR Ordering (UC-02, UC-03, UC-04) ── -->
   <menuitem id="wk_qr_parent" name="QR Ordering"
