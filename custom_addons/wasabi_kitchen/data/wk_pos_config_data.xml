@@ -9,7 +9,6 @@
 
     <record id="wk_floor_main" model="restaurant.floor">
       <field name="name">Lantai Utama</field>
-      <field name="pos_config_ids" eval="[(4, ref('wk_pos_config'))]"/>
     </record>
 
     <record id="wk_table_1"  model="restaurant.table"><field name="name">Table 1</field><field name="floor_id" ref="wk_floor_main"/><field name="seats">4</field><field name="shape">square</field></record>
