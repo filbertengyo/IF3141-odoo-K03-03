@@ -22,7 +22,7 @@ class WKReportTransaction(models.TransientModel):
     currency_id = fields.Many2one(
         'res.currency', compute='_compute_currency_id', readonly=True)
 
-    @api.depends('id')
+    @api.depends('date_start')
     def _compute_currency_id(self):
         for rec in self:
             rec.currency_id = self.env.company.currency_id

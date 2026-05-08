@@ -20,7 +20,7 @@ class WKRestaurantTable(models.Model):
         compute='_compute_qr_url',
     )
 
-    @api.depends('id')
+    @api.depends('name')
     def _compute_qr_url(self):
         for rec in self:
             rec.qr_url = f'/pos/self-order?table_id={rec.id}' if rec.id else ''
