@@ -3,7 +3,7 @@
    (mobile-first, public, no authentication)
    ============================================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Google Fonts loaded via <link> in layout template to avoid Odoo bundler truncating @import URLs */
 
 .o_wasabi_customer {
     font-family: 'IBM Plex Sans', sans-serif;
