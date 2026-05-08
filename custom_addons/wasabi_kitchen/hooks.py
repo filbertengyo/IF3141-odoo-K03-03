@@ -212,4 +212,111 @@ def post_init_hook(env):
     make_paid_order('Table 4', [('Sushi Set (8 pcs)', 1, ''), ('Miso Soup', 3, '')], 2)
     _logger.info("Paid orders created")
 
+    # ── 8. Mei 2026 — 155 paid orders (5/hari, 1–31 Mei) ────────────────────
+    _seed_may_transactions(env, session, wk_config, wk_floor, products, cash_method)
+
     _logger.info("=== Wasabi Kitchen: post_init_hook DONE ===")
+
+
+def _seed_may_transactions(env, session, wk_config, wk_floor, products, cash_method):
+    COMBOS = [
+        [('Ramen Tonkotsu', 2, 'Extra kuah'), ('Green Tea', 2, 'Less ice')],
+        [('Chicken Katsu', 1, 'Saus terpisah'), ('Miso Soup', 1, ''), ('Green Tea', 1, '')],
+        [('Sushi Set (8 pcs)', 1, ''), ('Green Tea', 2, '')],
+        [('Udon Goreng', 2, 'Pedas sedang'), ('Takoyaki (6 pcs)', 1, '')],
+        [('Salmon Sashimi', 1, 'Fresh only'), ('Miso Soup', 1, ''), ('Green Tea', 1, 'Hot')],
+        [('Ramen Tonkotsu', 1, ''), ('Chicken Katsu', 1, 'Tidak pedas'), ('Green Tea', 2, '')],
+        [('Takoyaki (6 pcs)', 2, ''), ('Miso Soup', 1, 'Tanpa garam'), ('Green Tea', 2, '')],
+        [('Sushi Set (8 pcs)', 2, ''), ('Miso Soup', 1, '')],
+        [('Udon Goreng', 1, ''), ('Salmon Sashimi', 1, ''), ('Green Tea', 1, 'Less ice')],
+        [('Ramen Tonkotsu', 3, 'Extra kuah'), ('Takoyaki (6 pcs)', 2, ''), ('Green Tea', 3, '')],
+        [('Chicken Katsu', 2, ''), ('Udon Goreng', 1, 'Extra topping'), ('Miso Soup', 1, '')],
+        [('Sushi Set (8 pcs)', 1, ''), ('Salmon Sashimi', 1, 'Fresh only'), ('Green Tea', 2, '')],
+        [('Ramen Tonkotsu', 1, 'Extra telur'), ('Miso Soup', 2, ''), ('Takoyaki (6 pcs)', 1, '')],
+        [('Chicken Katsu', 3, ''), ('Green Tea', 3, 'Less sugar')],
+        [('Udon Goreng', 2, ''), ('Miso Soup', 2, ''), ('Green Tea', 2, '')],
+        [('Ramen Tonkotsu', 1, ''), ('Sushi Set (8 pcs)', 1, ''), ('Green Tea', 1, '')],
+        [('Chicken Katsu', 1, ''), ('Takoyaki (6 pcs)', 1, ''), ('Miso Soup', 1, ''), ('Green Tea', 1, '')],
+        [('Salmon Sashimi', 1, ''), ('Sushi Set (8 pcs)', 1, ''), ('Green Tea', 2, '')],
+        [('Udon Goreng', 1, 'Tidak pedas'), ('Ramen Tonkotsu', 1, ''), ('Green Tea', 2, '')],
+        [('Miso Soup', 3, ''), ('Takoyaki (6 pcs)', 2, ''), ('Green Tea', 2, 'Hot')],
+    ]
+    SLOT_HOURS = [(11, 30), (12, 15), (13, 0), (18, 30), (19, 45)]
+
+    # Boost stock agar constraint tidak block seeding historis
+    location = env['stock.warehouse'].search([], limit=1).lot_stock_id
+    for prod in products.values():
+        quant = env['stock.quant'].search([
+            ('product_id', '=', prod.id), ('location_id', '=', location.id)
+        ], limit=1)
+        if quant:
+            quant.sudo().write({'quantity': 999})
+
+    for day in range(1, 32):
+        tables_today = [((day - 1) * 3 + off) % 10 + 1 for off in [0, 2, 4, 6, 8]]
+        for slot, tnum in enumerate(tables_today):
+            hour, minute = SLOT_HOURS[slot]
+            order_dt = datetime(2026, 5, day, hour, minute, 0)
+            tname = f'Table {tnum}'
+            table = env['restaurant.table'].search(
+                [('name', '=', tname), ('floor_id', '=', wk_floor.id)], limit=1)
+            if not table or not cash_method:
+                continue
+
+            date_start = order_dt.replace(hour=0, minute=0, second=0)
+            date_end   = order_dt.replace(hour=23, minute=59, second=59)
+            if env['pos.order'].search([
+                ('table_id', '=', table.id), ('state', '=', 'paid'),
+                ('date_order', '>=', date_start), ('date_order', '<=', date_end),
+            ], limit=1):
+                continue
+
+            lines_def = COMBOS[(day * 7 + slot * 3) % len(COMBOS)]
+            order_lines = []
+            for pname, qty, note in lines_def:
+                prod = products.get(pname)
+                if not prod:
+                    continue
+                subtotal = prod.list_price * qty
+                order_lines.append((0, 0, {
+                    'product_id': prod.id, 'qty': qty,
+                    'price_unit': prod.list_price,
+                    'price_subtotal': subtotal, 'price_subtotal_incl': subtotal,
+                    'discount': 0.0, 'catatan': note,
+                }))
+            if not order_lines:
+                continue
+
+            order = env['pos.order'].create({
+                'session_id': session.id, 'table_id': table.id,
+                'lines': order_lines, 'kds_status': 'ready', 'state': 'draft',
+                'date_order': order_dt,
+                'amount_tax': 0.0, 'amount_total': 0.0,
+                'amount_paid': 0.0, 'amount_return': 0.0,
+                'pricelist_id': wk_config.pricelist_id.id,
+                'currency_id': wk_config.currency_id.id,
+            })
+            order._compute_batch_amount_all()
+            env['pos.payment'].create({
+                'pos_order_id': order.id,
+                'payment_method_id': cash_method.id,
+                'amount': order.amount_total,
+            })
+            order.write({'state': 'paid', 'date_order': order_dt})
+
+    # Restore stock ke nilai realistis
+    FINAL_STOCK = {
+        'Ramen Tonkotsu': 10, 'Chicken Katsu': 8, 'Sushi Set (8 pcs)': 6,
+        'Salmon Sashimi': 2,  'Udon Goreng': 12,  'Miso Soup': 20,
+        'Takoyaki (6 pcs)': 15, 'Green Tea': 25,
+    }
+    for pname, qty in FINAL_STOCK.items():
+        prod = products.get(pname)
+        if not prod:
+            continue
+        quant = env['stock.quant'].search([
+            ('product_id', '=', prod.id), ('location_id', '=', location.id)
+        ], limit=1)
+        if quant:
+            quant.sudo().write({'quantity': qty})
+    _logger.info("May 2026 transactions seeded")
