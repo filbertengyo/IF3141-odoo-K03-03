@@ -54,6 +54,7 @@ Aktor: Pelanggan, Koki, Kasir, Manager
         'views/kds_views.xml',
         'views/billing_views.xml',
         'views/dashboard_views.xml',
+        'views/analytics_views.xml',
 
         # Wizard lainnya
         'wizards/export_report_wizard_views.xml',
@@ -82,4 +83,5 @@ Aktor: Pelanggan, Koki, Kasir, Manager
     'application': True,
     'installable': True,
     'auto_install': False,
+    'post_init_hook': 'seed_demo_dataset',
 }

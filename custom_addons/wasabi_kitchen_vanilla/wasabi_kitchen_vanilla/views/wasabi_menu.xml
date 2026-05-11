@@ -70,26 +70,6 @@
               groups="wasabi_kitchen_vanilla.group_wasabi_kasir"/>
 
     <!-- =====================================================
-         4) ORDERS — semua pesanan
-         ===================================================== -->
-    <menuitem id="menu_wasabi_orders"
-              name="Orders"
-              parent="menu_wasabi_root"
-              sequence="30"/>
-
-    <menuitem id="menu_wasabi_order_all"
-              name="Semua Pesanan"
-              parent="menu_wasabi_orders"
-              action="action_wasabi_order"
-              sequence="10"/>
-
-    <menuitem id="menu_wasabi_order_active"
-              name="Pesanan Aktif"
-              parent="menu_wasabi_orders"
-              action="action_wasabi_order_active"
-              sequence="20"/>
-
-    <!-- =====================================================
          5) MASTER DATA
          ===================================================== -->
     <menuitem id="menu_wasabi_master"
@@ -129,6 +109,18 @@
               parent="menu_wasabi_reports"
               action="action_wasabi_transaction_analytics"
               sequence="10"/>
+
+    <menuitem id="menu_wasabi_report_revenue_trend"
+              name="Tren Revenue Harian"
+              parent="menu_wasabi_reports"
+              action="action_wasabi_revenue_trend"
+              sequence="15"/>
+
+    <menuitem id="menu_wasabi_report_menu_popularity"
+              name="Popularitas Menu"
+              parent="menu_wasabi_reports"
+              action="action_wasabi_menu_popularity"
+              sequence="18"/>
 
     <menuitem id="menu_wasabi_report_export"
               name="Laporan &amp; Ekspor"

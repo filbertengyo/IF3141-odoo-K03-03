@@ -40,7 +40,7 @@
 
                     <div class="alert alert-success o_wasabi_preview_alert" role="alert"
                          invisible="transaction_count == 0">
-                        <i class="fa fa-info-circle me-2"/>
+                        <i class="fa fa-info-circle me-2" title="Info"/>
                         <strong><field name="transaction_count" readonly="1" nolabel="1"/> transaksi</strong>
                         akan diekspor untuk periode terpilih ·
                         Total revenue:

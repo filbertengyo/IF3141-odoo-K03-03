@@ -11,7 +11,7 @@
         <field name="name">wasabi.order.billing.kanban</field>
         <field name="model">wasabi.order</field>
         <field name="arch" type="xml">
-            <kanban class="o_wasabi_billing_kanban" sample="1"
+            <kanban class="o_wasabi_billing_kanban"
                     create="false" group_create="false">
                 <field name="id"/>
                 <field name="order_number"/>
@@ -22,6 +22,7 @@
                 <field name="item_count"/>
                 <field name="total_price"/>
                 <field name="elapsed_minutes"/>
+                <field name="items_preview"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click o_wasabi_bill_tile o_status_#{record.status.raw_value}">
@@ -37,6 +38,11 @@
                                     <t t-if="record.status.raw_value == 'ready'">✓ Ready</t>
                                 </span>
                             </div>
+
+                            <div class="o_wasabi_bill_items">
+                                <field name="items_preview"/>
+                            </div>
+
                             <div class="o_wasabi_bill_meta">
                                 <field name="item_count"/> item ·
                                 <field name="total_price" widget="monetary"/>
@@ -66,6 +72,7 @@
             (0, 0, {'view_mode': 'form',   'view_id': ref('view_wasabi_order_billing_form')})]"/>
         <field name="domain">[('status','in',('pending','cooking','ready'))]</field>
         <field name="search_view_id" ref="view_wasabi_order_search"/>
+        <field name="context">{}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Tidak ada meja yang siap dibilling

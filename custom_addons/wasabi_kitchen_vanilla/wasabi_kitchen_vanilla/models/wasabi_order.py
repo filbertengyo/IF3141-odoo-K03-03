@@ -41,7 +41,14 @@ class WasabiOrder(models.Model):
         default='pending',
         tracking=True,
         required=True,
+        group_expand='_group_expand_status',
     )
+
+    @api.model
+    def _group_expand_status(self, statuses, domain, order):
+        """Force kanban kolom muncul lengkap & berurut sesuai selection
+        (pending → cooking → ready → ...), bukan alfabetis."""
+        return [key for key, _label in type(self).status.selection]
 
     # Timestamps untuk SLA & analitik
     create_date = fields.Datetime(string='Diterima', readonly=True)
@@ -105,6 +112,25 @@ class WasabiOrder(models.Model):
         string='Transaksi',
         readonly=True,
     )
+
+    items_preview = fields.Text(
+        string='Preview Items',
+        compute='_compute_items_preview',
+        help='Ringkasan item pesanan untuk ditampilkan di kartu kanban.',
+    )
+
+    @api.depends('order_item_ids', 'order_item_ids.quantity', 'order_item_ids.name')
+    def _compute_items_preview(self):
+        for order in self:
+            lines = order.order_item_ids
+            if not lines:
+                order.items_preview = ''
+                continue
+            parts = []
+            for line in lines:
+                glyph = (line.menu_item_id.glyph or '•')
+                parts.append(f'{glyph} {line.name} ×{line.quantity}')
+            order.items_preview = '\n'.join(parts)
 
     # Display computeds for KDS
     elapsed_minutes = fields.Float(

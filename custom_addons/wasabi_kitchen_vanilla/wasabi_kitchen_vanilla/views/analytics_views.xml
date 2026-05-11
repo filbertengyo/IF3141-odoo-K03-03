@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         MENU POPULARITY — pivot + graph
+         Sumber: wasabi.order.item (per line item)
+         ===================================================== -->
+    <record id="view_wasabi_menu_popularity_pivot" model="ir.ui.view">
+        <field name="name">wasabi.order.item.popularity.pivot</field>
+        <field name="model">wasabi.order.item</field>
+        <field name="arch" type="xml">
+            <pivot string="Popularitas Menu" display_quantity="1">
+                <field name="menu_item_id" type="row"/>
+                <field name="quantity" type="measure" string="Total Qty Terjual"/>
+                <field name="subtotal" type="measure" string="Total Revenue"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_wasabi_menu_popularity_graph" model="ir.ui.view">
+        <field name="name">wasabi.order.item.popularity.graph</field>
+        <field name="model">wasabi.order.item</field>
+        <field name="arch" type="xml">
+            <graph string="Top Menu" type="bar" order="DESC">
+                <field name="menu_item_id"/>
+                <field name="quantity" type="measure" string="Qty Terjual"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_wasabi_menu_popularity_search" model="ir.ui.view">
+        <field name="name">wasabi.order.item.popularity.search</field>
+        <field name="model">wasabi.order.item</field>
+        <field name="arch" type="xml">
+            <search string="Filter Popularitas">
+                <field name="menu_item_id"/>
+                <field name="category_name" string="Kategori"/>
+                <separator/>
+                <filter string="Hanya Paid" name="filter_paid"
+                        domain="[('order_status','=','paid')]"/>
+                <filter string="Bulan Ini" name="filter_month"
+                        domain="[('order_id.paid_at','&gt;=',
+                                  (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="7 Hari Terakhir" name="filter_week"
+                        domain="[('order_id.paid_at','&gt;=',
+                                  (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Menu" name="group_menu"
+                            context="{'group_by': 'menu_item_id'}"/>
+                    <filter string="Kategori" name="group_category"
+                            context="{'group_by': 'category_name'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_wasabi_menu_popularity" model="ir.actions.act_window">
+        <field name="name">Popularitas Menu</field>
+        <field name="res_model">wasabi.order.item</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_wasabi_menu_popularity_graph')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_wasabi_menu_popularity_pivot')})]"/>
+        <field name="search_view_id" ref="view_wasabi_menu_popularity_search"/>
+        <field name="context">{'search_default_filter_paid': 1,
+                               'search_default_filter_month': 1,
+                               'search_default_group_menu': 1}</field>
+    </record>
+
+    <!-- =====================================================
+         REVENUE TREND — line chart 60 hari
+         ===================================================== -->
+    <record id="view_wasabi_revenue_trend_graph" model="ir.ui.view">
+        <field name="name">wasabi.transaction.trend.graph</field>
+        <field name="model">wasabi.transaction</field>
+        <field name="arch" type="xml">
+            <graph string="Tren Revenue Harian" type="line">
+                <field name="paid_at" interval="day"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_wasabi_revenue_trend" model="ir.actions.act_window">
+        <field name="name">Tren Revenue Harian</field>
+        <field name="res_model">wasabi.transaction</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_wasabi_revenue_trend_graph')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_wasabi_transaction_pivot')})]"/>
+        <field name="search_view_id" ref="view_wasabi_transaction_search"/>
+        <field name="domain">[('paid_at','&gt;=',
+                              (context_today() - datetime.timedelta(days=60)).strftime('%Y-%m-%d'))]</field>
+    </record>
+
+</odoo>

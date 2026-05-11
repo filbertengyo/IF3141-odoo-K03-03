@@ -13,7 +13,7 @@
         <field name="arch" type="xml">
             <kanban class="o_wasabi_kds_kanban" default_group_by="status"
                     records_draggable="false" group_create="false"
-                    group_delete="false" sample="1">
+                    group_delete="false">
                 <field name="id"/>
                 <field name="order_number"/>
                 <field name="table_id"/>
@@ -25,6 +25,7 @@
                 <field name="item_count"/>
                 <field name="total_qty"/>
                 <field name="order_item_ids"/>
+                <field name="items_preview"/>
                 <field name="notes"/>
                 <progressbar field="urgency" colors='{"normal": "success", "warn": "warning", "late": "danger"}'/>
                 <templates>
@@ -41,13 +42,9 @@
                                 </div>
                             </div>
 
-                            <ul class="o_wasabi_kds_items">
-                                <t t-foreach="record.order_item_ids.raw_value.slice(0,5)" t-as="line_id">
-                                    <li>
-                                        <span class="o_wasabi_kds_qty">×<t t-esc="record.order_item_ids.raw_value.length"/></span>
-                                    </li>
-                                </t>
-                            </ul>
+                            <div class="o_wasabi_kds_items">
+                                <field name="items_preview"/>
+                            </div>
 
                             <div class="o_wasabi_kds_meta">
                                 <span class="o_wasabi_chip"><field name="item_count"/> item</span>

@@ -229,3 +229,37 @@
     background: var(--wk-primary);
     color: #fff;
 }
+
+/* =============================================================
+   Pivot view (Analitik) — full-width supaya gak ke-cluster di kiri
+   ============================================================= */
+.o_pivot_view .o_pivot {
+    width: 100% !important;
+    margin: 0 !important;
+}
+.o_pivot_view .o_pivot th,
+.o_pivot_view .o_pivot td {
+    padding: 10px 16px;
+}
+/* Sel angka (yang bukan label paling kiri) — rata kanan & sedikit padding ekstra */
+.o_pivot_view .o_pivot td:not(.o_pivot_origin_row):not(:first-child),
+.o_pivot_view .o_pivot th:not(:first-child) {
+    text-align: right;
+    min-width: 110px;
+}
+/* Header kolom — sticky biar pas scroll tetap keliatan */
+.o_pivot_view .o_pivot thead th {
+    background: #fcfbfd;
+    border-bottom: 2px solid var(--wk-primary);
+    color: var(--wk-primary-dark);
+    font-weight: 600;
+}
+/* Row "Total" baris pertama */
+.o_pivot_view .o_pivot tbody tr:first-child {
+    background: linear-gradient(135deg, var(--wk-primary-soft, #f6f3f9), #fff);
+    font-weight: 700;
+}
+/* Hover row */
+.o_pivot_view .o_pivot tbody tr:hover {
+    background: #faf8fc;
+}

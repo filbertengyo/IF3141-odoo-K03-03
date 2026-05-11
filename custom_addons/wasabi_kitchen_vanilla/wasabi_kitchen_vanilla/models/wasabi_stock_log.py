@@ -55,7 +55,6 @@ class WasabiStockLog(models.Model):
     category_name = fields.Char(
         related='menu_item_id.category_id.name',
         string='Kategori',
-        store=True,
     )
 
     @api.depends('delta')

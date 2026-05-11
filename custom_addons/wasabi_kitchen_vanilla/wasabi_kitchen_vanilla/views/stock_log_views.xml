@@ -5,7 +5,7 @@
         <field name="name">wasabi.stock.log.tree</field>
         <field name="model">wasabi.stock.log</field>
         <field name="arch" type="xml">
-            <tree string="Log Stok" sample="1" create="false" edit="false"
+            <tree string="Log Stok" create="false" edit="false"
                   decoration-success="delta &gt; 0"
                   decoration-danger="delta &lt; 0"
                   decoration-info="reason == 'auto_decrement'">

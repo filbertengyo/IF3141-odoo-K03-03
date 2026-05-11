@@ -15,7 +15,7 @@
     transition: all .15s;
     position: relative;
     overflow: hidden;
-    min-height: 160px;
+    min-height: 280px;
 }
 .o_wasabi_billing_kanban .o_wasabi_bill_tile:hover {
     transform: translateY(-2px);
@@ -68,6 +68,32 @@
     color: #6c7079;
     margin-top: 4px;
 }
+.o_wasabi_billing_kanban .o_wasabi_bill_items {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 88px;
+    overflow-y: auto;
+    margin: 8px 0;
+    padding: 8px 10px;
+    background: rgba(255,255,255,.6);
+    border: 1px dashed #e3e1e6;
+    border-radius: var(--wk-radius);
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: #43404a;
+    white-space: pre-line;
+    font-family: 'Shippori Mincho', serif;
+    -webkit-mask-image: linear-gradient(180deg, #000 80%, transparent);
+            mask-image: linear-gradient(180deg, #000 80%, transparent);
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_items::-webkit-scrollbar {
+    width: 4px;
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_items::-webkit-scrollbar-thumb {
+    background: var(--wk-primary-light);
+    border-radius: 2px;
+}
+
 .o_wasabi_billing_kanban .o_wasabi_bill_btn {
     margin-top: auto;
     background: var(--wk-primary) !important;
@@ -77,41 +103,151 @@
     font-size: 11px;
 }
 
-/* Billing form */
-.o_wasabi_billing_form .o_wasabi_bill_sheet { max-width: 640px; }
+/* Header buttons (Lanjut ke Pembayaran / Cetak Bill) — kasih breathing room */
+.o_wasabi_billing_form .o_form_statusbar,
+.o_wasabi_billing_form > .o_form_view > header,
+.o_wasabi_billing_form .o_form_renderer > header {
+    padding: 14px 20px !important;
+    border-bottom: 1px solid #efedf2;
+    background: #fcfbfd;
+    margin-bottom: 0 !important;
+}
+.o_wasabi_billing_form .o_statusbar_buttons {
+    gap: 8px;
+}
+.o_wasabi_billing_form .o_statusbar_buttons .btn {
+    margin-right: 0;
+}
+
+/* Billing form — modal popup */
+/* Constrain modal width supaya gak nyebar full-width di layar lebar */
+.modal-dialog:has(.o_wasabi_billing_form),
+.o_dialog:has(.o_wasabi_billing_form) .modal-dialog {
+    max-width: 720px !important;
+    /* Cap tinggi modal ke 90vh; modal-content + modal-body yg handle scroll */
+    max-height: 90vh;
+}
+
+/* Modal-body jadi scrollable kalau konten panjang (banyak menu item, dll) */
+.modal-dialog:has(.o_wasabi_billing_form) .modal-content,
+.o_dialog:has(.o_wasabi_billing_form) .modal-content {
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+.modal-dialog:has(.o_wasabi_billing_form) .modal-body,
+.o_dialog:has(.o_wasabi_billing_form) .modal-body {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0;  /* header gradient nempel pinggir */
+}
+
+.o_wasabi_billing_form { overflow: visible !important; }
+.o_wasabi_billing_form .o_form_sheet_bg { background: #fff; padding: 0; overflow: visible; }
+.o_wasabi_billing_form .o_wasabi_bill_sheet {
+    max-width: none !important;
+    width: 100%;
+    padding: 0 !important;
+    box-shadow: none;
+    border: none;
+    overflow: visible;
+}
+
 .o_wasabi_billing_form .o_wasabi_bill_head {
     background: linear-gradient(135deg, var(--wk-primary), var(--wk-primary-dark));
-    color: #fff;
-    margin: -24px -24px 18px;
-    padding: 18px 24px;
+    color: #fff !important;
+    margin: 0 0 16px;
+    padding: 22px 26px;
     border-radius: var(--wk-radius-lg) var(--wk-radius-lg) 0 0;
 }
+.o_wasabi_billing_form .o_wasabi_bill_head * { color: #fff !important; }
+
 .o_wasabi_billing_form .o_wasabi_bill_eyebrow {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: .08em;
-    opacity: .75;
+    opacity: .8;
 }
 .o_wasabi_billing_form .o_wasabi_bill_title {
     font-family: 'Shippori Mincho', serif;
-    font-size: 26px;
+    font-size: 28px;
     font-weight: 700;
-    margin: 4px 0;
+    margin: 6px 0 4px;
+    line-height: 1.1;
 }
-.o_wasabi_billing_form .o_wasabi_bill_title .o_field_widget { color: #fff !important; }
 .o_wasabi_billing_form .o_wasabi_bill_meta {
     font-size: 12px;
-    opacity: .85;
+    opacity: .9;
     font-family: 'JetBrains Mono', monospace;
 }
 
-.o_wasabi_billing_form .o_wasabi_bill_lines tbody tr td:nth-child(1) { font-weight: 500; }
+/* Body padding sebagai pengganti sheet padding yang udah di-nol */
+.o_wasabi_billing_form .o_wasabi_bill_sheet > *:not(.o_wasabi_bill_head) {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+.o_wasabi_billing_form .o_wasabi_bill_sheet > *:last-child {
+    padding-bottom: 24px;
+}
+
+.o_wasabi_billing_form .o_wasabi_bill_lines {
+    margin-top: 4px;
+}
+.o_wasabi_billing_form .o_wasabi_bill_lines thead th {
+    background: #fcfbfd !important;
+    border-bottom: 2px solid var(--wk-primary) !important;
+    color: var(--wk-primary-dark) !important;
+    font-size: 11px !important;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: 10px 12px !important;
+}
+.o_wasabi_billing_form .o_wasabi_bill_lines tbody tr td {
+    padding: 12px !important;
+    border-bottom: 1px solid #f1eff3 !important;
+}
+/* Buang baris kosong + footer "add row" yang nyumbang gap */
+.o_wasabi_billing_form .o_wasabi_bill_lines tbody tr.o_data_row_empty,
+.o_wasabi_billing_form .o_wasabi_bill_lines tbody tr.o_field_x2many_list_row_add,
+.o_wasabi_billing_form .o_wasabi_bill_lines tfoot,
+.o_wasabi_billing_form .o_field_x2many_list_row_add { display: none !important; }
+.o_wasabi_billing_form .o_wasabi_bill_lines tbody tr td:nth-child(1) {
+    font-weight: 600;
+    color: #1f1d24;
+}
 
 .o_wasabi_bill_totals {
-    background: #fcfbfd;
-    padding: 16px;
+    background: linear-gradient(135deg, #fcfbfd, #f6f3f9);
+    padding: 16px 20px;
     border-radius: var(--wk-radius-lg);
     border: 1px solid #e3e1e6;
+    margin-top: 4px !important;
+    min-width: 320px;
+    max-width: 380px;
+    margin-left: auto !important;
+}
+.o_wasabi_bill_totals .o_form_label { font-size: 13px; color: #6c7079; }
+.o_wasabi_bill_totals .oe_subtotal_footer_separator label {
+    font-weight: 700;
+    color: var(--wk-primary-dark);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+.o_wasabi_bill_totals .oe_subtotal_footer_separator .o_field_widget {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 22px !important;
+    font-weight: 700;
+    color: var(--wk-primary) !important;
+}
+
+.o_wasabi_bill_notes_group {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: var(--wk-accent-soft);
+    border-left: 4px solid var(--wk-accent);
+    border-radius: var(--wk-radius);
 }
 
 /* Payment wizard */

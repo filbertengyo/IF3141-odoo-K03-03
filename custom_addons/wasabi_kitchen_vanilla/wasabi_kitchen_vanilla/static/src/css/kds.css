@@ -71,20 +71,23 @@
 .o_wasabi_kds_time.o_urg_late { color: #991b1b; background: #fee2e2; font-weight: 700; }
 
 .o_wasabi_kds_items {
-    list-style: none;
-    padding: 0;
     margin: 0 0 10px 0;
-}
-.o_wasabi_kds_items li {
+    padding: 8px 12px;
+    background: rgba(255,255,255,.65);
+    border: 1px dashed #e3e1e6;
+    border-radius: var(--wk-radius);
     font-size: 13px;
-    padding: 3px 0;
+    line-height: 1.6;
     color: #1f1d24;
+    font-family: 'Shippori Mincho', serif;
+    white-space: pre-line;          /* render \n di items_preview jadi baris baru */
+    max-height: 120px;
+    overflow-y: auto;
 }
-.o_wasabi_kds_qty {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    color: var(--wk-primary);
-    margin-right: 8px;
+.o_wasabi_kds_items::-webkit-scrollbar { width: 4px; }
+.o_wasabi_kds_items::-webkit-scrollbar-thumb {
+    background: var(--wk-primary-light);
+    border-radius: 2px;
 }
 
 .o_wasabi_kds_meta {

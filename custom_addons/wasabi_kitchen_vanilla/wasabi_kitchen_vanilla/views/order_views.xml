@@ -8,7 +8,7 @@
         <field name="name">wasabi.order.tree</field>
         <field name="model">wasabi.order</field>
         <field name="arch" type="xml">
-            <tree string="Pesanan" sample="1"
+            <tree string="Pesanan"
                   decoration-warning="urgency == 'warn'"
                   decoration-danger="urgency == 'late'"
                   decoration-muted="status == 'cancelled'"
@@ -144,12 +144,13 @@
         <field name="model">wasabi.order</field>
         <field name="priority">99</field>
         <field name="arch" type="xml">
-            <form string="Billing" class="o_wasabi_billing_form">
+            <form string="Billing" class="o_wasabi_billing_form"
+                  create="false" edit="false" delete="false">
                 <header>
                     <button name="%(action_wasabi_payment_wizard)d" type="action"
                             string="💳 Lanjut ke Pembayaran" class="btn-primary"
                             invisible="status != 'ready'"
-                            context="{'default_order_id': active_id}"/>
+                            context="{'default_order_id': id}"/>
                     <button name="action_print_bill" type="object"
                             string="🖨 Cetak Bill" class="btn-secondary"/>
                 </header>
@@ -169,13 +170,13 @@
                         </div>
                     </div>
 
-                    <field name="order_item_ids" readonly="1">
+                    <field name="order_item_ids" readonly="1" nolabel="1">
                         <tree create="false" delete="false" edit="false" class="o_wasabi_bill_lines">
                             <field name="name"/>
-                            <field name="quantity"/>
+                            <field name="quantity" string="Qty"/>
                             <field name="unit_price"/>
                             <field name="subtotal"/>
-                            <field name="note"/>
+                            <field name="note" optional="hide"/>
                             <field name="currency_id" column_invisible="1"/>
                         </tree>
                     </field>
@@ -186,6 +187,10 @@
                         <field name="service_charge" readonly="1"/>
                         <field name="total_price" readonly="1" class="oe_subtotal_footer_separator"/>
                         <field name="currency_id" invisible="1"/>
+                    </group>
+
+                    <group string="Catatan Pesanan" invisible="not notes" class="o_wasabi_bill_notes_group">
+                        <field name="notes" readonly="1" nolabel="1"/>
                     </group>
                 </sheet>
             </form>
@@ -218,6 +223,9 @@
                     <filter string="Meja" name="group_table" context="{'group_by': 'table_id'}"/>
                     <filter string="Tanggal" name="group_date" context="{'group_by': 'create_date:day'}"/>
                 </group>
+                <searchpanel>
+                    <field name="status" string="Status" enable_counters="1" icon="fa-filter"/>
+                </searchpanel>
             </search>
         </field>
     </record>

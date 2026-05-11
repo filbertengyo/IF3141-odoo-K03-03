@@ -50,7 +50,7 @@
                                 <t t-esc="record.table_number.raw_value &lt; 10 ? '0' + record.table_number.raw_value : record.table_number.raw_value"/>
                             </div>
                             <div class="o_wasabi_table_cap">
-                                <i class="fa fa-users"/> <field name="capacity"/> pax
+                                <i class="fa fa-users" title="Kapasitas"/> <field name="capacity"/> pax
                             </div>
                             <div class="o_wasabi_table_status">
                                 <span t-attf-class="o_status_pill o_status_pill_#{record.status.raw_value}">

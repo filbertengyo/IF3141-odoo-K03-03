@@ -38,7 +38,6 @@ class WasabiTable(models.Model):
         ],
         string='Status',
         default='available',
-        tracking=True,
     )
     is_active = fields.Boolean(string='Aktif', default=True)
     notes = fields.Text(string='Catatan')
