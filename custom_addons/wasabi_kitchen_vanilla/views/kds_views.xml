@@ -141,7 +141,7 @@
             (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_wasabi_kds_kanban')}),
             (0, 0, {'view_mode': 'tree',   'view_id': ref('view_wasabi_order_tree')}),
             (0, 0, {'view_mode': 'form',   'view_id': ref('view_wasabi_kds_form')})]"/>
-        <field name="domain">[('status', 'in', ('pending','cooking','ready'))]</field>
+        <field name="domain">[]</field>
         <field name="context">{'search_default_filter_today': 1}</field>
         <field name="search_view_id" ref="view_wasabi_order_search"/>
         <field name="help" type="html">
