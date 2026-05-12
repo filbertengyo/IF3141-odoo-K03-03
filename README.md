@@ -38,7 +38,7 @@ Sistem ini dibangun di atas platform Odoo 17 sebagai custom addon mandiri bernam
   Koki dapat melakukan koreksi stok manual melalui menu Kitchen Display. Perubahan langsung tersinkronisasi ke tampilan Browse Menu pelanggan sehingga item yang habis otomatis tidak dapat dipesan.
 
 - **Billing dan Konfirmasi Pembayaran (UC-07, UC-10)**
-  Kasir membuka wizard billing dari daftar pesanan berstatus Ready, memilih metode pembayaran (Cash atau QRIS), memasukkan nominal, dan sistem menghitung kembalian secara otomatis, termasuk PB1 10% dan service charge 5%.
+  Kasir membuka wizard billing dari daftar pesanan berstatus Ready, memilih metode pembayaran (Cash atau QRIS), memasukkan nominal, dan sistem menghitung kembalian secara otomatis, termasuk PB1 10% dan service charge 5%. Pembayaran QRIS menampilkan QR code dinamis berbasis EMVCo yang di-generate langsung dari total transaksi. Kartu pesanan berstatus Paid dan Cancelled pada floor plan billing juga dapat dibuka untuk melihat ringkasan transaksi.
 
 - **Laporan Transaksi dan Ekspor (UC-01, UC-08)**
   Manager dapat memfilter transaksi berdasarkan rentang tanggal, melihat ringkasan total pesanan dan total pendapatan, lalu mengunduh hasilnya dalam format CSV/XLSX.
@@ -60,7 +60,7 @@ Sistem ini dibangun di atas platform Odoo 17 sebagai custom addon mandiri bernam
 | Database | PostgreSQL 16 |
 | Containerization | Docker + Docker Compose |
 | View Layer | Odoo XML Views (QWeb) |
-| Module Dependencies | `base`, `web`, `mail`, `product`, `portal` |
+| Module Dependencies | `base`, `web`, `product`, `portal` |
 | Access Control | Odoo `res.groups` + `ir.rule` (record-level) |
 | Data Seeding | Python `post_init_hook` via `__manifest__.py` |
 | Export | Python `csv` module via Odoo `base64` file attachment |
