@@ -1,25 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <record id="view_wasabi_stock_log_kanban" model="ir.ui.view">
+        <field name="name">wasabi.stock.log.kanban</field>
+        <field name="model">wasabi.stock.log</field>
+        <field name="arch" type="xml">
+            <kanban class="o_wasabi_stock_log_kanban"
+                    create="false" group_create="false" records_draggable="false">
+                <field name="menu_item_id"/>
+                <field name="category_name"/>
+                <field name="reason"/>
+                <field name="before_qty"/>
+                <field name="after_qty"/>
+                <field name="delta"/>
+                <field name="delta_label"/>
+                <field name="staff_id"/>
+                <field name="order_id"/>
+                <field name="note"/>
+                <field name="create_date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card o_wasabi_slog_card o_slog_#{record.delta.raw_value > 0 ? 'pos' : 'neg'}">
+                            <div class="o_wasabi_slog_indicator">
+                                <span t-attf-class="o_wasabi_slog_dot o_slog_dot_#{record.delta.raw_value > 0 ? 'pos' : 'neg'}"/>
+                                <span t-attf-class="o_wasabi_slog_delta o_slog_delta_#{record.delta.raw_value > 0 ? 'pos' : 'neg'}">
+                                    <t t-esc="record.delta_label.raw_value"/>
+                                </span>
+                            </div>
+                            <div class="o_wasabi_slog_menu">
+                                <strong><field name="menu_item_id"/></strong>
+                                <small class="o_wasabi_slog_cat"><field name="category_name"/></small>
+                            </div>
+                            <div class="o_wasabi_slog_qty">
+                                <span class="o_wasabi_slog_before"><t t-esc="record.before_qty.raw_value"/></span>
+                                <span class="o_wasabi_slog_arrow">→</span>
+                                <span class="o_wasabi_slog_after"><t t-esc="record.after_qty.raw_value"/></span>
+                            </div>
+                            <div class="o_wasabi_slog_meta">
+                                <field name="reason" widget="badge"/>
+                                <span t-if="record.staff_id.raw_value" class="o_wasabi_slog_staff">
+                                    · <field name="staff_id"/>
+                                </span>
+                            </div>
+                            <div class="o_wasabi_slog_footer">
+                                <small><field name="create_date"/></small>
+                                <small t-if="record.note.raw_value" class="o_wasabi_slog_note">
+                                    <field name="note"/>
+                                </small>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <record id="view_wasabi_stock_log_tree" model="ir.ui.view">
         <field name="name">wasabi.stock.log.tree</field>
         <field name="model">wasabi.stock.log</field>
         <field name="arch" type="xml">
             <tree string="Log Stok" create="false" edit="false"
                   decoration-success="delta &gt; 0"
-                  decoration-danger="delta &lt; 0"
-                  decoration-info="reason == 'auto_decrement'">
+                  decoration-danger="delta &lt; 0">
                 <field name="create_date"/>
                 <field name="menu_item_id"/>
-                <field name="category_name" optional="hide"/>
+                <field name="category_name"/>
                 <field name="reason" widget="badge"/>
                 <field name="before_qty"/>
                 <field name="delta" column_invisible="1"/>
                 <field name="delta_label" string="Δ"/>
                 <field name="after_qty"/>
                 <field name="staff_id"/>
-                <field name="order_id" optional="show"/>
-                <field name="note" optional="show"/>
+                <field name="order_id"/>
+                <field name="note"/>
             </tree>
         </field>
     </record>
@@ -76,7 +129,11 @@
     <record id="action_wasabi_stock_log" model="ir.actions.act_window">
         <field name="name">Log Perubahan Stok</field>
         <field name="res_model">wasabi.stock.log</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_wasabi_stock_log_kanban')}),
+            (0, 0, {'view_mode': 'tree',   'view_id': ref('view_wasabi_stock_log_tree')}),
+            (0, 0, {'view_mode': 'form',   'view_id': ref('view_wasabi_stock_log_form')})]"/>
         <field name="search_view_id" ref="view_wasabi_stock_log_search"/>
     </record>
 

@@ -226,6 +226,89 @@
 }
 
 /* =============================================================
+   STOCK LOG KANBAN
+   ============================================================= */
+.o_wasabi_stock_log_kanban .o_wasabi_slog_card {
+    padding: 12px 14px;
+    border-radius: var(--wk-radius-lg);
+    border: 1px solid #e3e1e6;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 220px;
+}
+.o_wasabi_slog_card.o_slog_pos { border-left: 4px solid #16a34a; }
+.o_wasabi_slog_card.o_slog_neg { border-left: 4px solid #ef4444; }
+
+.o_wasabi_slog_indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.o_wasabi_slog_dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.o_slog_dot_pos { background: #16a34a; }
+.o_slog_dot_neg { background: #ef4444; }
+
+.o_wasabi_slog_delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+.o_slog_delta_pos { color: #16a34a; }
+.o_slog_delta_neg { color: #ef4444; }
+
+.o_wasabi_slog_menu {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.o_wasabi_slog_cat {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #9ca3af;
+}
+
+.o_wasabi_slog_qty {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--wk-primary-dark);
+}
+.o_wasabi_slog_arrow { color: #9ca3af; }
+.o_wasabi_slog_before { color: #6b7280; }
+.o_wasabi_slog_after  { font-weight: 700; }
+
+.o_wasabi_slog_meta {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    font-size: 11px;
+}
+.o_wasabi_slog_staff { color: #6b7280; }
+
+.o_wasabi_slog_footer {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 10px;
+    color: #9ca3af;
+    border-top: 1px dashed #e3e1e6;
+    padding-top: 6px;
+    margin-top: 2px;
+}
+.o_wasabi_slog_note { font-style: italic; }
+
+/* =============================================================
    EXPORT WIZARD
    ============================================================= */
 .o_wasabi_export_form .o_wasabi_preview_alert {
