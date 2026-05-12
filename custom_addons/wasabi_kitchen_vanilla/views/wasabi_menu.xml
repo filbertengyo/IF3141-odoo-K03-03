@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- =====================================================
+         APP 1: Kitchen Display — koki only
+         ===================================================== -->
+    <menuitem id="menu_wasabi_root_koki"
+              name="Kitchen Display"
+              web_icon="wasabi_kitchen_vanilla,static/description/icon.png"
+              sequence="10"
+              action="action_wasabi_kds"
+              groups="wasabi_kitchen_vanilla.group_wasabi_koki"/>
+
+    <menuitem id="menu_wasabi_kds"
+              name="Antrian Masak"
+              parent="menu_wasabi_root_koki"
+              action="action_wasabi_kds"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_koki"/>
+
+    <menuitem id="menu_wasabi_stock_correct"
+              name="Koreksi Stok"
+              parent="menu_wasabi_root_koki"
+              action="action_wasabi_stock_correction"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_koki"/>
+
+    <menuitem id="menu_wasabi_stock_log"
+              name="Log Perubahan Stok"
+              parent="menu_wasabi_root_koki"
+              action="action_wasabi_stock_log"
+              sequence="30"
+              groups="wasabi_kitchen_vanilla.group_wasabi_koki"/>
+
+
+    <!-- =====================================================
+         APP 2: Kasir — kasir only
+         ===================================================== -->
+    <menuitem id="menu_wasabi_root_kasir"
+              name="Kasir"
+              web_icon="wasabi_kitchen_vanilla,static/description/icon.png"
+              sequence="11"
+              action="action_wasabi_billing"
+              groups="wasabi_kitchen_vanilla.group_wasabi_kasir"/>
+
+    <menuitem id="menu_wasabi_billing"
+              name="Buka Billing"
+              parent="menu_wasabi_root_kasir"
+              action="action_wasabi_billing"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_kasir"/>
+
+    <menuitem id="menu_wasabi_transaction_list"
+              name="Riwayat Transaksi"
+              parent="menu_wasabi_root_kasir"
+              action="action_wasabi_transaction"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_kasir"/>
+
+
+    <!-- =====================================================
+         APP 3: Pelaporan — manager only
+         Query transaksi, export laporan
+         ===================================================== -->
+    <menuitem id="menu_wasabi_root_manager"
+              name="Pelaporan"
+              web_icon="wasabi_kitchen_vanilla,static/description/icon.png"
+              sequence="12"
+              action="action_wasabi_transaction_analytics"
+              groups="wasabi_kitchen_vanilla.group_wasabi_manager"/>
+
+    <menuitem id="menu_wasabi_report_history"
+              name="Riwayat Transaksi"
+              parent="menu_wasabi_root_manager"
+              action="action_wasabi_transaction_analytics"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_manager"/>
+
+    <menuitem id="menu_wasabi_report_revenue_trend"
+              name="Tren Revenue Harian"
+              parent="menu_wasabi_root_manager"
+              action="action_wasabi_revenue_trend"
+              sequence="15"
+              groups="wasabi_kitchen_vanilla.group_wasabi_manager"/>
+
+    <menuitem id="menu_wasabi_report_menu_popularity"
+              name="Popularitas Menu"
+              parent="menu_wasabi_root_manager"
+              action="action_wasabi_menu_popularity"
+              sequence="18"
+              groups="wasabi_kitchen_vanilla.group_wasabi_manager"/>
+
+    <menuitem id="menu_wasabi_report_export"
+              name="Laporan &amp; Ekspor"
+              parent="menu_wasabi_root_manager"
+              action="action_wasabi_export_wizard"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_manager"/>
+
+
+    <!-- =====================================================
+         APP 4: Wasabi Kitchen — admin only
+         Single persistent navbar, semua section sebagai dropdown.
+         Satu-satunya app di 9-dot untuk admin.
+         ===================================================== -->
+    <menuitem id="menu_wasabi_root"
+              name="Wasabi Kitchen"
+              web_icon="wasabi_kitchen_vanilla,static/description/icon.png"
+              sequence="13"
+              action="action_wasabi_dashboard_open"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_dashboard"
+              name="Dashboard"
+              parent="menu_wasabi_root"
+              action="action_wasabi_dashboard_open"
+              sequence="5"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_kitchen_mgr"
+              name="Kitchen Display"
+              parent="menu_wasabi_root"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_kds_mgr"
+              name="Antrian Masak"
+              parent="menu_wasabi_kitchen_mgr"
+              action="action_wasabi_kds"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_stock_correct_mgr"
+              name="Koreksi Stok"
+              parent="menu_wasabi_kitchen_mgr"
+              action="action_wasabi_stock_correction"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_stock_log_mgr"
+              name="Log Perubahan Stok"
+              parent="menu_wasabi_kitchen_mgr"
+              action="action_wasabi_stock_log"
+              sequence="30"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_pos_mgr"
+              name="Point of Sale"
+              parent="menu_wasabi_root"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_billing_mgr"
+              name="Buka Billing"
+              parent="menu_wasabi_pos_mgr"
+              action="action_wasabi_billing"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_transaction_mgr"
+              name="Riwayat Transaksi"
+              parent="menu_wasabi_pos_mgr"
+              action="action_wasabi_transaction"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_master"
+              name="Master Data"
+              parent="menu_wasabi_root"
+              sequence="30"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_menu_item"
+              name="Menu &amp; Stok"
+              parent="menu_wasabi_master"
+              action="action_wasabi_menu_item"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_category"
+              name="Kategori"
+              parent="menu_wasabi_master"
+              action="action_wasabi_category"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_table"
+              name="Meja Restoran"
+              parent="menu_wasabi_master"
+              action="action_wasabi_table"
+              sequence="30"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_reports"
+              name="Reports"
+              parent="menu_wasabi_root"
+              sequence="40"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_report_history_admin"
+              name="Riwayat Transaksi (Analitik)"
+              parent="menu_wasabi_reports"
+              action="action_wasabi_transaction_analytics"
+              sequence="10"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_report_revenue_admin"
+              name="Tren Revenue Harian"
+              parent="menu_wasabi_reports"
+              action="action_wasabi_revenue_trend"
+              sequence="15"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_report_popularity_admin"
+              name="Popularitas Menu"
+              parent="menu_wasabi_reports"
+              action="action_wasabi_menu_popularity"
+              sequence="18"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+    <menuitem id="menu_wasabi_report_export_admin"
+              name="Laporan &amp; Ekspor"
+              parent="menu_wasabi_reports"
+              action="action_wasabi_export_wizard"
+              sequence="20"
+              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
+
+</odoo>

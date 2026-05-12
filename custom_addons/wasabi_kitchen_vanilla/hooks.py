@@ -36,6 +36,27 @@ def seed_demo_dataset(env):
         _logger.warning("Wasabi Kitchen demo seed FAILED: %s", e, exc_info=True)
 
 
+def _set_home_action(env, user, action_xmlid, menu_xmlid):
+    """Set home action via URL so menu_id is included — activates the navbar on login."""
+    action = env.ref(action_xmlid, raise_if_not_found=False)
+    menu   = env.ref(menu_xmlid,   raise_if_not_found=False)
+    if not (action and menu and user):
+        return
+    url = f'/web#action={action.id}&menu_id={menu.id}'
+    existing = env['ir.actions.act_url'].search(
+        [('name', '=', f'__wk_home_{user.login}')], limit=1)
+    if existing:
+        existing.url = url
+        user.action_id = existing.id
+    else:
+        act = env['ir.actions.act_url'].create({
+            'name': f'__wk_home_{user.login}',
+            'url': url,
+            'target': 'self',
+        })
+        user.action_id = act.id
+
+
 def _do_seed(env):
     random.seed(20260511)
     _logger.info("=== WASABI KITCHEN VANILLA — DEMO SEED START ===")
@@ -64,31 +85,53 @@ def _do_seed(env):
 
     admin = env['res.users'].search([('login', '=', 'admin')], limit=1) or env.user
 
-    # ── 1. Bikin kasir users tambahan ────────────────────────────────────
+    # ── 1. Bikin role users (koki / kasir) ───────────────────────────────
+    koki_group  = env.ref('wasabi_kitchen_vanilla.group_wasabi_koki',  raise_if_not_found=False)
     kasir_group = env.ref('wasabi_kitchen_vanilla.group_wasabi_kasir', raise_if_not_found=False)
-    kasir_users = [admin]
-    KASIR_PROFILES = [
-        ('kasir_rina',  'Rina Wibowo',     'rina@wasabi.local'),
-        ('kasir_dimas', 'Dimas Pratama',   'dimas@wasabi.local'),
-        ('kasir_sari',  'Sari Kusuma',     'sari@wasabi.local'),
+    base_user   = env.ref('base.group_user', raise_if_not_found=False)
+
+    admin_group   = env.ref('wasabi_kitchen_vanilla.group_wasabi_admin',   raise_if_not_found=False)
+    manager_group = env.ref('wasabi_kitchen_vanilla.group_wasabi_manager', raise_if_not_found=False)
+
+    # (login, display_name, group, action_xmlid, menu_xmlid)
+    ROLE_PROFILES = [
+        ('koki',    'Koki',    koki_group,    'wasabi_kitchen_vanilla.action_wasabi_kds',                  'wasabi_kitchen_vanilla.menu_wasabi_root_koki'),
+        ('kasir',   'Kasir',   kasir_group,   'wasabi_kitchen_vanilla.action_wasabi_billing',              'wasabi_kitchen_vanilla.menu_wasabi_root_kasir'),
+        ('manager', 'Manager', manager_group, 'wasabi_kitchen_vanilla.action_wasabi_transaction_analytics','wasabi_kitchen_vanilla.menu_wasabi_root_manager'),
     ]
-    for login, name, email in KASIR_PROFILES:
+    kasir_users = [admin]
+    for login, name, group, action_xml, menu_xml in ROLE_PROFILES:
         existing = env['res.users'].search([('login', '=', login)], limit=1)
         if existing:
-            kasir_users.append(existing)
+            if login == 'kasir':
+                kasir_users.append(existing)
+            _set_home_action(env, existing, action_xml, menu_xml)
             continue
         try:
+            groups = []
+            if base_user:
+                groups.append((4, base_user.id))
+            if group:
+                groups.append((4, group.id))
             user = env['res.users'].create({
-                'login':   login,
-                'name':    name,
-                'email':   email,
-                'password': 'wasabi123',
-                'groups_id': [(4, kasir_group.id)] if kasir_group else [],
+                'login':     login,
+                'name':      name,
+                'password':  login,
+                'groups_id': groups,
             })
-            kasir_users.append(user)
-            _logger.info("Created kasir user: %s", name)
+            if login == 'kasir':
+                kasir_users.append(user)
+            _set_home_action(env, user, action_xml, menu_xml)
+            _logger.info("Created user: %s (group: %s)", login, group.name if group else 'none')
         except Exception as e:
             _logger.warning("Skip create user %s: %s", login, e)
+
+    # Admin: assign group_wasabi_admin + set home → dashboard
+    if admin_group and admin_group not in admin.groups_id:
+        admin.groups_id = [(4, admin_group.id)]
+    _set_home_action(env, admin,
+                     'wasabi_kitchen_vanilla.action_wasabi_dashboard_open',
+                     'wasabi_kitchen_vanilla.menu_wasabi_root')
 
     # ── 2. Variasi status meja (untuk floor plan) ────────────────────────
     # Total meja diasumsikan 12. Set 2 jadi 'reserved'.

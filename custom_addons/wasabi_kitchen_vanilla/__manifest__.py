@@ -40,11 +40,9 @@ Aktor: Pelanggan, Koki, Kasir, Manager
         'data/wasabi_sequence.xml',
         'data/wasabi_demo_data.xml',
 
-        # Wizards harus load SEBELUM views yang mereferensikan action-nya
-        'wizards/payment_wizard_views.xml',
-        'wizards/qr_preview_wizard_views.xml',
-
-        # Views — actions must load BEFORE menus that reference them
+        # Views — wizard views load SEBELUM menus yang mereferensikan action-nya
+        'views/payment_wizard_views.xml',
+        'views/qr_preview_wizard_views.xml',
         'views/category_views.xml',
         'views/menu_item_views.xml',
         'views/table_views.xml',
@@ -55,9 +53,7 @@ Aktor: Pelanggan, Koki, Kasir, Manager
         'views/billing_views.xml',
         'views/dashboard_views.xml',
         'views/analytics_views.xml',
-
-        # Wizard lainnya
-        'wizards/export_report_wizard_views.xml',
+        'views/export_report_wizard_views.xml',
 
         # Reports
         'report/billing_report.xml',

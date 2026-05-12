@@ -27,3 +27,14 @@ access_wasabi_dashboard_kasir,wasabi.dashboard kasir,model_wasabi_dashboard,grou
 access_wasabi_dashboard_manager,wasabi.dashboard manager,model_wasabi_dashboard,group_wasabi_manager,1,1,1,1
 access_wasabi_qr_preview_kasir,wasabi.qr.preview kasir,model_wasabi_qr_preview,group_wasabi_kasir,1,1,1,1
 access_wasabi_qr_preview_manager,wasabi.qr.preview manager,model_wasabi_qr_preview,group_wasabi_manager,1,1,1,1
+access_wasabi_category_admin,wasabi.category admin,model_wasabi_category,group_wasabi_admin,1,1,1,1
+access_wasabi_menu_item_admin,wasabi.menu.item admin,model_wasabi_menu_item,group_wasabi_admin,1,1,1,1
+access_wasabi_table_admin,wasabi.table admin,model_wasabi_table,group_wasabi_admin,1,1,1,1
+access_wasabi_order_admin,wasabi.order admin,model_wasabi_order,group_wasabi_admin,1,1,1,1
+access_wasabi_order_item_admin,wasabi.order.item admin,model_wasabi_order_item,group_wasabi_admin,1,1,1,1
+access_wasabi_transaction_admin,wasabi.transaction admin,model_wasabi_transaction,group_wasabi_admin,1,1,1,1
+access_wasabi_stock_log_admin,wasabi.stock.log admin,model_wasabi_stock_log,group_wasabi_admin,1,1,1,1
+access_wasabi_payment_wizard_admin,wasabi.payment.wizard admin,model_wasabi_payment_wizard,group_wasabi_admin,1,1,1,1
+access_wasabi_export_report_wizard_admin,wasabi.export.report.wizard admin,model_wasabi_export_report_wizard,group_wasabi_admin,1,1,1,1
+access_wasabi_dashboard_admin,wasabi.dashboard admin,model_wasabi_dashboard,group_wasabi_admin,1,1,1,1
+access_wasabi_qr_preview_admin,wasabi.qr.preview admin,model_wasabi_qr_preview,group_wasabi_admin,1,1,1,1
