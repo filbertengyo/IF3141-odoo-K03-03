@@ -112,7 +112,7 @@
                     <notebook>
                         <page string="Riwayat Pesanan" name="orders">
                             <field name="order_ids" readonly="1">
-                                <tree>
+                                <tree default_order="id desc">
                                     <field name="order_number"/>
                                     <field name="create_date"/>
                                     <field name="item_count"/>
