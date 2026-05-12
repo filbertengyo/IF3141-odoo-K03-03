@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 
 class WasabiCategory(models.Model):
@@ -38,6 +39,15 @@ class WasabiCategory(models.Model):
     def _compute_menu_item_count(self):
         for rec in self:
             rec.menu_item_count = len(rec.menu_item_ids)
+
+    def unlink(self):
+        for rec in self:
+            if rec.menu_item_ids:
+                raise UserError(
+                    f'Kategori "{rec.name}" masih memiliki {len(rec.menu_item_ids)} item menu. '
+                    f'Hapus atau pindahkan item menu terlebih dahulu sebelum menghapus kategori.'
+                )
+        return super().unlink()
 
     def action_view_menu_items(self):
         self.ensure_one()
