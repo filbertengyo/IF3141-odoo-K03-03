@@ -10,7 +10,13 @@ class WasabiMenuItem(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Nama Menu', required=True, tracking=True)
-    sku = fields.Char(string='SKU', required=True, copy=False, tracking=True)
+    sku = fields.Char(
+        string='SKU',
+        required=True,
+        copy=False,
+        readonly=True,
+        default=lambda self: _('Baru'),
+    )
     sequence = fields.Integer(string='Urutan', default=10)
     description = fields.Text(string='Deskripsi', translate=True)
 
@@ -125,7 +131,7 @@ class WasabiMenuItem(models.Model):
         for rec in self:
             if rec.remaining_stock < 0:
                 rec.stock_status = 'unlimited'
-            elif rec.remaining_stock == 0:
+            elif not rec.is_available or rec.remaining_stock == 0:
                 rec.stock_status = 'out'
             elif rec.remaining_stock <= rec.low_stock_threshold:
                 rec.stock_status = 'low'
@@ -187,6 +193,17 @@ class WasabiMenuItem(models.Model):
             'note':          _('Auto-decrement dari order #%s') % (order_id or '-'),
         })
         return True
+
+    def action_save_and_back(self):
+        self.ensure_one()
+        return {'type': 'ir.actions.act_window_close'}
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('sku', _('Baru')) == _('Baru'):
+                vals['sku'] = self.env['ir.sequence'].next_by_code('wasabi.menu.item') or _('Baru')
+        return super().create(vals_list)
 
     def manual_correct_stock(self, new_stock, note=None):
         """Koreksi manual oleh koki. Mencatat StockLog dan auto-toggle availability."""
