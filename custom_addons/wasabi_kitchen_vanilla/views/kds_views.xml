@@ -151,21 +151,102 @@
     </record>
 
     <!-- =====================================================
-         STOCK CORRECTION — Action khusus untuk koki (UC-08)
-         Pakai view editable list dari menu_item
+         STOCK CORRECTION — Kanban khusus koki (UC-08)
+         ===================================================== -->
+    <record id="view_wasabi_stock_correction_kanban" model="ir.ui.view">
+        <field name="name">wasabi.menu.item.stock.kanban</field>
+        <field name="model">wasabi.menu.item</field>
+        <field name="arch" type="xml">
+            <kanban class="o_wasabi_stock_kanban" default_group_by="category_id"
+                    group_create="false" sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="price"/>
+                <field name="currency_id"/>
+                <field name="remaining_stock"/>
+                <field name="is_available"/>
+                <field name="stock_status"/>
+                <field name="photo_color"/>
+                <field name="glyph"/>
+                <field name="category_id"/>
+                <field name="low_stock_threshold"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click o_wasabi_sc_card o_sc_#{record.stock_status.raw_value}">
+                            <div t-attf-class="o_wasabi_sc_photo o_color_#{record.photo_color.raw_value or 'cream'}">
+                                <span class="o_wasabi_glyph"><t t-esc="record.glyph.raw_value"/></span>
+                            </div>
+                            <div class="o_wasabi_sc_body">
+                                <div class="o_wasabi_sc_name">
+                                    <strong><field name="name"/></strong>
+                                </div>
+                                <div class="o_wasabi_sc_price">
+                                    <field name="price" widget="monetary"/>
+                                </div>
+                            </div>
+                            <div t-attf-class="o_wasabi_sc_stock o_sc_stock_#{record.stock_status.raw_value}">
+                                <div class="o_wasabi_sc_stock_num">
+                                    <t t-if="record.stock_status.raw_value == 'unlimited'">∞</t>
+                                    <t t-else=""><t t-esc="record.remaining_stock.raw_value"/></t>
+                                </div>
+                                <div class="o_wasabi_sc_stock_label">
+                                    <t t-if="record.stock_status.raw_value == 'out'">⚠ Habis</t>
+                                    <t t-elif="record.stock_status.raw_value == 'low'">⚡ Stok Rendah</t>
+                                    <t t-elif="record.stock_status.raw_value == 'unlimited'">Unlimited</t>
+                                    <t t-else="">Tersedia</t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Stock correction tree — editable remaining_stock inline -->
+    <record id="view_wasabi_stock_correction_tree" model="ir.ui.view">
+        <field name="name">wasabi.menu.item.stock.tree</field>
+        <field name="model">wasabi.menu.item</field>
+        <field name="arch" type="xml">
+            <tree string="Koreksi Stok" class="o_wasabi_sc_tree"
+                  decoration-danger="stock_status == 'out'"
+                  decoration-warning="stock_status == 'low'"
+                  decoration-success="stock_status == 'available'">
+                <field name="sequence" widget="handle"/>
+                <field name="glyph" string="" optional="show"/>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="stock_status" widget="badge"
+                       decoration-success="stock_status in ('available','unlimited')"
+                       decoration-warning="stock_status == 'low'"
+                       decoration-danger="stock_status == 'out'"
+                       readonly="1"/>
+                <field name="remaining_stock" string="Stok" optional="show"/>
+                <field name="low_stock_threshold" string="Ambang Rendah" optional="show"/>
+                <field name="is_available" widget="boolean_toggle"/>
+                <field name="sold_count" string="Terjual" readonly="1" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- =====================================================
+         STOCK CORRECTION — Action
          ===================================================== -->
     <record id="action_wasabi_stock_correction" model="ir.actions.act_window">
         <field name="name">Koreksi Stok</field>
         <field name="res_model">wasabi.menu.item</field>
-        <field name="view_mode">tree,kanban,form</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_wasabi_stock_correction_kanban')}),
+            (0, 0, {'view_mode': 'tree',   'view_id': ref('view_wasabi_stock_correction_tree')}),
+            (0, 0, {'view_mode': 'form',   'view_id': ref('view_wasabi_menu_item_form')})]"/>
         <field name="context">{'search_default_group_category': 1}</field>
         <field name="search_view_id" ref="view_wasabi_menu_item_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Sesuaikan stok dengan kondisi fisik di dapur
             </p>
-            <p>Klik pada angka stok untuk mengubahnya. Perubahan akan
-               langsung tersinkron ke menu pelanggan.</p>
+            <p>Klik kartu untuk edit stok. Perubahan langsung tersinkron ke menu pelanggan.</p>
         </field>
     </record>
 
