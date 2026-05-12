@@ -73,11 +73,11 @@ Sistem ini dibangun di atas platform Odoo 17 sebagai custom addon mandiri bernam
 
 | Dashboard (Admin) | KDS Kanban (Koki) | Billing Wizard (Kasir) |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/dashboard-admin.png" width="280"/> | <img src="docs/screenshots/kds-kanban.png" width="280"/> | <img src="docs/screenshots/billing-wizard.png" width="280"/> |
+| <img src="docs/screenshots/dashboard-admin.png" height="180"/> | <img src="docs/screenshots/kds-kanban.png" height="180"/> | <img src="docs/screenshots/billing-wizard.png" height="180"/> |
 
 | Laporan Transaksi (Manager) | Koreksi Stok (Koki) | Browse Menu (Pelanggan) |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/laporan-transaksi.png" width="280"/> | <img src="docs/screenshots/koreksi-stok.png" width="280"/> | <img src="docs/screenshots/browse-menu.png" width="280"/> |
+| <img src="docs/screenshots/laporan-transaksi.png" height="180"/> | <img src="docs/screenshots/koreksi-stok.png" height="180"/> | <img src="docs/screenshots/browse-menu.png" height="180"/> |
 
 </div>
 
@@ -110,7 +110,7 @@ docker compose ps
 
 <div align="center">
 <img src="docs/screenshots/setup-01-docker-up.png" width="700"/>
-<br/><em>Expected: container web dan db berjalan dengan status Up / healthy</em>
+<br/><em>Container web dan db berjalan dengan status Up / healthy</em>
 </div>
 
 <br/>
@@ -120,8 +120,8 @@ docker compose ps
 Akses `http://localhost:8069`, login dengan salah satu kredensial berikut sesuai role yang ingin diuji (lihat tabel Kredensial per Role di bawah).
 
 <div align="center">
-<img src="docs/screenshots/setup-02-login.png" width="700"/>
-<br/><em>Expected: halaman login Odoo, setelah login langsung diarahkan ke aplikasi sesuai role</em>
+<img src="docs/screenshots/setup-02-login.png" height="400"/>
+<br/><em>Halaman login Odoo, setelah login langsung diarahkan ke aplikasi sesuai role</em>
 </div>
 
 <br/>
@@ -131,32 +131,21 @@ Akses `http://localhost:8069`, login dengan salah satu kredensial berikut sesuai
 Login dengan akun `admin / admin`, sistem langsung membuka Dashboard Wasabi Kitchen. Navbar atas menampilkan menu lengkap: Dashboard, Kitchen Display, Point of Sale, Master Data, dan Reports.
 
 <div align="center">
-<img src="docs/screenshots/setup-03-admin-dashboard.png" width="700"/>
-<br/><em>Expected: navbar Wasabi Kitchen dengan dropdown lengkap, bukan halaman Odoo default</em>
+<img src="docs/screenshots/setup-03-admin-dashboard.png" height="400"/>
+<br/><em>Navbar Wasabi Kitchen dengan dropdown lengkap setelah login sebagai Admin</em>
 </div>
 
 <br/>
 
-### 5. Aktifkan Developer Mode (Opsional, untuk Development)
-
-Masuk ke **Settings**, scroll ke bawah, klik **Activate the developer mode**.
-
-<div align="center">
-<img src="docs/screenshots/setup-04-developer-mode.png" width="700"/>
-<br/><em>Expected: URL berubah menjadi http://localhost:8069/web?debug=1</em>
-</div>
-
-<br/>
-
-### 6. Update Modul Setelah Perubahan (Development)
+### 5. Update Modul Setelah Perubahan (Development)
 
 ```bash
-# Perubahan Python / XML tanpa schema baru (restart cukup)
+# Perubahan Python / XML / CSS (restart cukup)
 docker compose restart web
 
-# Perubahan model / field baru (perlu schema update)
-docker exec if3141-odoo-k03-03-web-1 odoo -d postgres -u wasabi_kitchen_vanilla --stop-after-init
-docker compose up -d
+# Perubahan model / field baru atau reset data demo
+docker compose down -v
+docker compose up --build -d
 ```
 
 ---
@@ -179,17 +168,13 @@ Sistem mengimplementasikan RBAC menggunakan Odoo security groups. Setiap role me
 
 ## Alur Per Role
 
----
-
 ### Pelanggan (Konsumen)
-
-> **Placeholder** — alur pelanggan belum didefinisikan secara eksplisit di iterasi ini. Berikut rancangan sementara berdasarkan arsitektur yang ada.
 
 | | |
 |:---|:---|
 | **Akun** | Tidak diperlukan |
 | **Akses** | URL QR code unik per meja |
-| **Contoh URL** | `http://localhost:8069/wasabi/menu?table=3` |
+| **Contoh URL** | `http://localhost:8069/wasabi/menu/<qr_token>` |
 
 **Langkah:**
 
@@ -200,8 +185,8 @@ Sistem mengimplementasikan RBAC menggunakan Odoo security groups. Setiap role me
 5. Pelanggan menunggu makanan diantar. Status dapat dilihat kembali melalui URL yang sama.
 
 <div align="center">
-<img src="docs/screenshots/flow-pelanggan-browse.png" width="700"/>
-<br/><em>Expected: halaman Browse Menu tanpa login, menu difilter otomatis berdasarkan stok tersedia</em>
+<img src="docs/screenshots/flow-pelanggan-browse.png" height="500"/>
+<br/><em>Halaman Browse Menu tanpa login, menu difilter otomatis berdasarkan stok tersedia</em>
 </div>
 
 ---
@@ -218,20 +203,20 @@ Sistem mengimplementasikan RBAC menggunakan Odoo security groups. Setiap role me
 **Alur Antrian Masak (UC-05, UC-09):**
 
 1. Login, sistem langsung membuka KDS Kanban dengan 3 kolom: **Pending**, **Cooking**, **Ready**.
-2. Klik **Mulai Masak** pada kartu di kolom Pending. Kartu berpindah ke Cooking.
-3. Setelah makanan selesai, klik **Tandai READY**. Kartu masuk ke kolom Ready dan siap diproses kasir.
+2. Klik **Mulai Masak** pada kartu Meja 04 di kolom Pending. Kartu berpindah ke Cooking.
+3. Setelah makanan selesai, klik **Tandai READY** pada kartu Meja 04. Kartu masuk ke kolom Ready dan siap diproses kasir.
 
 **Alur Koreksi Stok (UC-06):**
 
 1. Buka **Kitchen Display > Koreksi Stok**.
-2. Pilih item menu, masukkan jumlah koreksi, dan konfirmasi.
+2. Pilih item menu, contoh: **Salmon Sashimi**, ubah stok dari 12 menjadi 5, lalu konfirmasi.
 3. Stok diperbarui secara real-time. Item dengan stok 0 otomatis tidak muncul di Browse Menu pelanggan.
 
 <div align="center">
 
-| 1. KDS Kanban (Pending) | 2. Status Berubah ke Cooking | 3. Status Berubah ke Ready | 4. Koreksi Stok |
+| 1. KDS Kanban (Pending) | 2. Meja 04 Cooking | 3. Meja 04 Ready | 4. Koreksi Stok Salmon Sashimi |
 |:---:|:---:|:---:|:---:|
-| <img src="docs/screenshots/flow-koki-01-kds.png" width="160"/> | <img src="docs/screenshots/flow-koki-02-cooking.png" width="160"/> | <img src="docs/screenshots/flow-koki-03-ready.png" width="160"/> | <img src="docs/screenshots/flow-koki-04-stock.png" width="160"/> |
+| <img src="docs/screenshots/flow-koki-01-kds.png" height="140"/> | <img src="docs/screenshots/flow-koki-02-cooking.png" height="140"/> | <img src="docs/screenshots/flow-koki-03-ready.png" height="140"/> | <img src="docs/screenshots/flow-koki-04-stock.png" height="140"/> |
 
 </div>
 
@@ -260,7 +245,7 @@ Sistem mengimplementasikan RBAC menggunakan Odoo security groups. Setiap role me
 
 | 1. Daftar Billing | 2. Wizard Billing | 3. Pilih Metode Pembayaran | 4. Konfirmasi Selesai |
 |:---:|:---:|:---:|:---:|
-| <img src="docs/screenshots/flow-kasir-01-billing-list.png" width="160"/> | <img src="docs/screenshots/flow-kasir-02-billing-wizard.png" width="160"/> | <img src="docs/screenshots/flow-kasir-03-payment-method.png" width="160"/> | <img src="docs/screenshots/flow-kasir-04-paid.png" width="160"/> |
+| <img src="docs/screenshots/flow-kasir-01-billing-list.png" height="140"/> | <img src="docs/screenshots/flow-kasir-02-billing-wizard.png" height="140"/> | <img src="docs/screenshots/flow-kasir-03-payment-method.png" height="140"/> | <img src="docs/screenshots/flow-kasir-04-paid.png" height="140"/> |
 
 </div>
 
@@ -277,17 +262,17 @@ Sistem mengimplementasikan RBAC menggunakan Odoo security groups. Setiap role me
 
 **Alur Query dan Ekspor Laporan (UC-01, UC-08):**
 
-1. Login, sistem langsung membuka Riwayat Transaksi Analitik dengan seluruh transaksi `paid`.
+1. Login, sistem langsung membuka Riwayat Transaksi dalam bentuk bar chart per hari dengan seluruh transaksi `paid`.
 2. Gunakan filter tanggal untuk mempersempit rentang, contoh: 01/05/2026 sampai 31/05/2026.
-3. Buka **Pelaporan > Tren Revenue Harian** untuk melihat grafik pendapatan per hari.
+3. Buka **Pelaporan > Tren Revenue Harian** untuk melihat grafik total pendapatan per hari.
 4. Buka **Pelaporan > Popularitas Menu** untuk melihat item yang paling banyak dipesan.
-5. Buka **Pelaporan > Laporan & Ekspor**, pilih format (CSV atau XLSX), klik **Ekspor**. File terunduh dengan kolom: Nomor Transaksi, Nomor Meja, Total (Rp), Metode Pembayaran, Kasir, Timestamp.
+5. Buka **Pelaporan > Laporan & Ekspor**, pilih rentang tanggal dan format (CSV atau XLSX), klik **Ekspor**. File terunduh dengan kolom: Nomor Transaksi, Nomor Meja, Total (Rp), Metode Pembayaran, Timestamp.
 
 <div align="center">
 
-| 1. Riwayat Transaksi | 2. Tren Revenue Harian | 3. Ekspor Laporan |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/flow-manager-01-transaction.png" width="220"/> | <img src="docs/screenshots/flow-manager-02-revenue.png" width="220"/> | <img src="docs/screenshots/flow-manager-03-export.png" width="220"/> |
+| 1. Riwayat Transaksi (Bar Chart) | 2. Tren Revenue Harian | 3. Popularitas Menu | 4. Ekspor Laporan |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screenshots/flow-manager-01-transaction.png" height="160"/> | <img src="docs/screenshots/flow-manager-02-revenue.png" height="160"/> | <img src="docs/screenshots/flow-manager-02-popularity.png" height="160"/> | <img src="docs/screenshots/flow-manager-03-export.png" height="160"/> |
 
 </div>
 
@@ -307,16 +292,28 @@ Admin memiliki akses penuh ke seluruh fitur melalui navbar dropdown sehingga tid
 **Langkah:**
 
 1. Login, sistem langsung membuka Dashboard Wasabi Kitchen dengan navbar aktif.
-2. **Kitchen Display** — pantau KDS, koreksi stok, lihat log perubahan stok.
-3. **Point of Sale** — buka billing, lihat riwayat transaksi.
-4. **Master Data** — kelola menu & stok, kategori, dan data meja restoran.
-5. **Reports** — akses semua laporan analitik dan ekspor data (sama seperti role Manager).
+2. **Kitchen Display**: pantau KDS, koreksi stok, lihat log perubahan stok.
+3. **Point of Sale**: buka billing, lihat riwayat transaksi.
+4. **Master Data**: kelola menu & stok, kategori, dan data meja restoran.
+5. **Reports**: akses semua laporan analitik dan ekspor data (sama seperti role Manager).
 
 <div align="center">
 
-| 1. Dashboard | 2. KDS via Navbar | 3. Master Data Menu |
-|:---:|:---:|:---:|
-| <img src="docs/screenshots/flow-admin-01-dashboard.png" width="220"/> | <img src="docs/screenshots/flow-admin-02-kds.png" width="220"/> | <img src="docs/screenshots/flow-admin-03-master-data.png" width="220"/> |
+| 1. Dashboard | 2. KDS via Navbar |
+|:---:|:---:|
+| <img src="docs/screenshots/flow-admin-01-dashboard.png" height="160"/> | <img src="docs/screenshots/flow-admin-02-kds.png" height="160"/> |
+
+</div>
+
+**Master Data - Menu & Stok:**
+
+Halaman Master Data dibuka dengan tampilan hub kategori. Klik salah satu kategori untuk melihat item menu di dalamnya. Kategori **Semua** menampilkan seluruh item lintas kategori, dikelompokkan per kategori (group by category).
+
+<div align="center">
+
+| 3. Hub Kategori | 4. Item Menu (Group by Category) |
+|:---:|:---:|
+| <img src="docs/screenshots/flow-admin-03-master-data.png" height="160"/> | <img src="docs/screenshots/flow-admin-04-master-data-items.png" height="160"/> |
 
 </div>
 
@@ -354,51 +351,51 @@ docker compose down
 IF3141-odoo-K03-03/
 ├── docker-compose.yml
 ├── config/
-│   └── odoo.conf                    # DB connection, addons_path, port 8069
-├── scripts/                         # export_db / import_db
-├── dump/                            # file dump database
+│   └── odoo.conf
+├── scripts/
+├── dump/
 └── custom_addons/
     └── wasabi_kitchen_vanilla/
-        ├── __manifest__.py          # metadata modul, dependencies, post_init_hook
-        ├── hooks.py                 # seed_demo_dataset: user, meja, menu, orders
+        ├── __manifest__.py
+        ├── hooks.py
         ├── models/
-        │   ├── wasabi_category.py   # model kategori menu
-        │   ├── wasabi_menu_item.py  # model item menu + stok
-        │   ├── wasabi_table.py      # model meja restoran + QR URL
-        │   ├── wasabi_order.py      # model order + state machine KDS
-        │   ├── wasabi_order_item.py # model order line + catatan
-        │   ├── wasabi_transaction.py # model transaksi terbayar
-        │   ├── wasabi_stock_log.py  # model log koreksi stok
-        │   └── wasabi_dashboard.py  # model dashboard (computed summary)
+        │   ├── wasabi_category.py
+        │   ├── wasabi_menu_item.py
+        │   ├── wasabi_table.py
+        │   ├── wasabi_order.py
+        │   ├── wasabi_order_item.py
+        │   ├── wasabi_transaction.py
+        │   ├── wasabi_stock_log.py
+        │   └── wasabi_dashboard.py
         ├── views/
-        │   ├── kds_views.xml        # KDS kanban + tree
-        │   ├── order_views.xml      # daftar pesanan aktif
-        │   ├── billing_views.xml    # billing list + floor view
-        │   ├── payment_wizard_views.xml  # wizard konfirmasi pembayaran
-        │   ├── qr_preview_wizard_views.xml # wizard preview QR meja
-        │   ├── menu_item_views.xml  # master data menu & stok
-        │   ├── category_views.xml   # master data kategori
-        │   ├── table_views.xml      # master data meja restoran
-        │   ├── transaction_views.xml # riwayat transaksi
-        │   ├── stock_log_views.xml  # log perubahan stok
-        │   ├── dashboard_views.xml  # dashboard admin
-        │   ├── analytics_views.xml  # laporan analitik
-        │   ├── export_report_wizard_views.xml # wizard ekspor laporan
-        │   └── wasabi_menu.xml      # struktur menu navigasi per role
+        │   ├── kds_views.xml
+        │   ├── order_views.xml
+        │   ├── billing_views.xml
+        │   ├── payment_wizard_views.xml
+        │   ├── qr_preview_wizard_views.xml
+        │   ├── menu_item_views.xml
+        │   ├── category_views.xml
+        │   ├── table_views.xml
+        │   ├── transaction_views.xml
+        │   ├── stock_log_views.xml
+        │   ├── dashboard_views.xml
+        │   ├── analytics_views.xml
+        │   ├── export_report_wizard_views.xml
+        │   └── wasabi_menu.xml
         ├── report/
-        │   └── billing_report.xml   # template cetak struk
+        │   └── billing_report.xml
         ├── data/
-        │   ├── wasabi_sequence.xml  # sequence nomor transaksi
-        │   └── wasabi_demo_data.xml # kategori dan item menu awal
+        │   ├── wasabi_sequence.xml
+        │   └── wasabi_demo_data.xml
         ├── security/
-        │   ├── wasabi_security.xml  # groups (koki, kasir, manager, admin) + record rules
-        │   └── ir.model.access.csv  # akses model per group
+        │   ├── wasabi_security.xml
+        │   └── ir.model.access.csv
         └── static/
-            ├── description/         # icon dan banner modul
+            ├── description/
             └── src/
-                ├── css/             # wasabi_theme.css, kds.css, billing.css, customer.css
-                ├── js/              # kds_kanban.js, billing_floor.js, customer_menu.js
-                └── xml/             # kds_templates.xml (QWeb widget templates)
+                ├── css/
+                ├── js/
+                └── xml/
 ```
 
 ---
@@ -407,7 +404,7 @@ IF3141-odoo-K03-03/
 
 Sistem QR-Ordering dan Kitchen Display System Wasabi Kitchen berhasil diimplementasikan sebagai custom addon Odoo 17 yang mandiri, mencakup alur pesanan end-to-end mulai dari pemindaian QR oleh pelanggan hingga konfirmasi pembayaran oleh kasir dan ekspor laporan oleh manager. RBAC telah diimplementasikan menggunakan Odoo security groups dengan empat role terisolasi: setiap aktor hanya melihat satu aplikasi di app switcher dan diarahkan otomatis ke halaman yang relevan setelah login, sehingga tidak ada celah navigasi antar role melalui URL manual pun. State machine yang ketat (pending, cooking, ready, paid), mekanisme auto-decrement stok, dan 155 transaksi demo yang disertakan menjadikan sistem dapat langsung didemonstrasikan tanpa konfigurasi tambahan setelah `docker compose up --build`.
 
-Untuk pengembangan lebih lanjut, disarankan beberapa hal: pertama, integrasikan payment gateway nyata untuk metode QRIS agar transaksi non-tunai dapat diverifikasi secara otomatis tanpa input manual kasir, kedua, tambahkan Odoo Bus atau WebSocket push agar KDS di layar koki ter-refresh otomatis sehingga koki tidak perlu reload manual untuk melihat pesanan baru masuk, ketiga, implementasikan alur pelanggan yang eksplisit dengan halaman frontend berbasis portal Odoo sehingga pelanggan memiliki tampilan yang konsisten dan terisolasi dari backend, dan keempat, tambahkan dekorator `@api.depends` pada field computed `active_orders_count` di model meja agar hitungan pesanan aktif diperbarui secara reaktif tanpa reload halaman.
+Untuk pengembangan lebih lanjut, disarankan beberapa hal: pertama, integrasikan payment gateway nyata untuk metode QRIS agar transaksi non-tunai dapat diverifikasi secara otomatis tanpa input manual kasir, kedua, tambahkan Odoo Bus atau WebSocket push agar KDS di layar koki ter-refresh otomatis sehingga koki tidak perlu reload manual untuk melihat pesanan baru masuk, ketiga, perkuat validasi stok di sisi frontend Browse Menu agar quantity selector langsung dibatasi sesuai sisa stok tanpa menunggu error dari server, dan keempat, tambahkan dekorator `@api.depends` pada field computed `active_orders_count` di model meja agar hitungan pesanan aktif diperbarui secara reaktif tanpa reload halaman.
 
 ---
 
