@@ -62,10 +62,6 @@
                     <separator string="Catatan"/>
                     <field name="notes" readonly="1"/>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids"/>
-                    <field name="message_ids"/>
-                </div>
             </form>
         </field>
     </record>

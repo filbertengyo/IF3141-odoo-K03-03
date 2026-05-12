@@ -7,7 +7,7 @@ class WasabiTransaction(models.Model):
     _name = 'wasabi.transaction'
     _description = 'Wasabi Kitchen — Transaksi Pembayaran'
     _order = 'paid_at desc'
-    _inherit = ['mail.thread']
+    _inherit = []
     _rec_name = 'transaction_number'
 
     transaction_number = fields.Char(
@@ -40,7 +40,6 @@ class WasabiTransaction(models.Model):
         required=True,
         default=lambda self: self.env.user,
         domain=[('share', '=', False)],
-        tracking=True,
     )
 
     payment_method = fields.Selection(
@@ -50,7 +49,6 @@ class WasabiTransaction(models.Model):
         ],
         string='Metode Pembayaran',
         required=True,
-        tracking=True,
     )
 
     total_amount = fields.Monetary(
@@ -114,7 +112,6 @@ class WasabiTransaction(models.Model):
                     'wasabi.transaction'
                 ) or _('Baru')
         transactions = super().create(vals_list)
-        # Update order status & free table
         for trx in transactions:
             order = trx.order_id
             if order.status != 'ready':
@@ -127,12 +124,8 @@ class WasabiTransaction(models.Model):
                 'paid_at':        trx.paid_at,
                 'transaction_id': trx.id,
             })
-            # Bebaskan meja
             if order.table_id:
                 order.table_id.status = 'available'
-            order.message_post(body=_(
-                'Pembayaran %s diterima — Rp %s via %s'
-            ) % (trx.transaction_number, trx.total_amount, dict(trx._fields['payment_method'].selection)[trx.payment_method]))
         return transactions
 
     def action_print_receipt(self):

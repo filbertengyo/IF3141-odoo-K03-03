@@ -7,7 +7,7 @@ class WasabiOrder(models.Model):
     _name = 'wasabi.order'
     _description = 'Wasabi Kitchen — Pesanan'
     _order = 'create_date desc'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = []
     _rec_name = 'order_number'
 
     order_number = fields.Char(
@@ -21,7 +21,6 @@ class WasabiOrder(models.Model):
         'wasabi.table',
         string='Meja',
         required=True,
-        tracking=True,
     )
     table_number = fields.Integer(
         string='No. Meja',
@@ -39,7 +38,6 @@ class WasabiOrder(models.Model):
         ],
         string='Status',
         default='pending',
-        tracking=True,
         required=True,
         group_expand='_group_expand_status',
     )
@@ -203,44 +201,30 @@ class WasabiOrder(models.Model):
             if not order.order_item_ids:
                 raise UserError(_('Pesanan kosong, tidak bisa dikonfirmasi.'))
 
-            # Lock rows — Odoo akan menggunakan transaction RR isolation
             menu_ids = order.order_item_ids.mapped('menu_item_id').ids
             self.env.cr.execute(
                 "SELECT id FROM wasabi_menu_item WHERE id IN %s FOR UPDATE",
                 (tuple(menu_ids),),
             )
 
-            # Validasi & decrement
             for line in order.order_item_ids:
                 line.menu_item_id.auto_decrement_stock(
                     line.quantity, order_id=order.id
                 )
-
-            order.message_post(body=_('Pesanan dikonfirmasi & stok di-decrement.'))
         return True
 
     def action_start_cooking(self):
-        """Koki klik 'Mulai Masak' (UC-07 part 1)."""
         for order in self:
             if order.status != 'pending':
                 raise UserError(_('Hanya order PENDING yang bisa dimulai memasak.'))
-            order.write({
-                'status':     'cooking',
-                'cooking_at': fields.Datetime.now(),
-            })
-            order.message_post(body=_('Mulai dimasak oleh %s') % self.env.user.name)
+            order.write({'status': 'cooking', 'cooking_at': fields.Datetime.now()})
         return True
 
     def action_mark_ready(self):
-        """Koki tandai READY (UC-07 part 2)."""
         for order in self:
             if order.status != 'cooking':
                 raise UserError(_('Hanya order COOKING yang bisa ditandai READY.'))
-            order.write({
-                'status':   'ready',
-                'ready_at': fields.Datetime.now(),
-            })
-            order.message_post(body=_('Pesanan siap diantarkan.'))
+            order.write({'status': 'ready', 'ready_at': fields.Datetime.now()})
         return True
 
     def action_open_billing(self):
@@ -267,7 +251,7 @@ class WasabiOrder(models.Model):
                         line.menu_item_id.remaining_stock + line.quantity,
                         note=_('Rollback stok dari pembatalan order %s') % order.order_number,
                     )
-            order.status = 'cancelled'
+            order.write({'status': 'cancelled'})
             if order.table_id.active_order_id == order:
                 order.table_id.status = 'available'
         return True
