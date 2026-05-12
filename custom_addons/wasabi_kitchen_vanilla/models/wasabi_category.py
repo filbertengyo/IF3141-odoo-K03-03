@@ -41,11 +41,15 @@ class WasabiCategory(models.Model):
 
     def action_view_menu_items(self):
         self.ensure_one()
+        all_cat = self.env.ref(
+            'wasabi_kitchen_vanilla.category_all', raise_if_not_found=False
+        )
+        is_all = all_cat and self.id == all_cat.id
         return {
             'type': 'ir.actions.act_window',
-            'name': f'Menu — {self.name}',
+            'name': 'Menu & Stok' if is_all else f'Menu — {self.name}',
             'res_model': 'wasabi.menu.item',
-            'view_mode': 'tree,kanban,form',
-            'domain': [('category_id', '=', self.id)],
-            'context': {'default_category_id': self.id},
+            'view_mode': 'kanban,tree,form',
+            'domain': [] if is_all else [('category_id', '=', self.id)],
+            'context': {} if is_all else {'default_category_id': self.id},
         }

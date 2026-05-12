@@ -173,15 +173,8 @@
     <menuitem id="menu_wasabi_menu_item"
               name="Menu &amp; Stok"
               parent="menu_wasabi_master"
-              action="action_wasabi_menu_item"
-              sequence="10"
-              groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
-
-    <menuitem id="menu_wasabi_category"
-              name="Kategori"
-              parent="menu_wasabi_master"
               action="action_wasabi_category"
-              sequence="20"
+              sequence="10"
               groups="wasabi_kitchen_vanilla.group_wasabi_admin"/>
 
     <menuitem id="menu_wasabi_table"

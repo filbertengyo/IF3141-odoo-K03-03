@@ -5,6 +5,12 @@
         <!-- ===========================================
              KATEGORI MENU
              =========================================== -->
+        <record id="category_all" model="wasabi.category">
+            <field name="name">Semua</field>
+            <field name="icon">🍽️</field>
+            <field name="sequence">0</field>
+            <field name="description">Tampilkan semua menu dari semua kategori.</field>
+        </record>
         <record id="category_sushi" model="wasabi.category">
             <field name="name">Sushi</field>
             <field name="icon">🍣</field>

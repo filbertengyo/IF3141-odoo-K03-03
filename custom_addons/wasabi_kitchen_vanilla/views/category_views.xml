@@ -19,37 +19,40 @@
     </record>
 
     <!-- =====================================================
-         CATEGORY — Kanban
+         CATEGORY — Kanban (landing page untuk Menu & Stok)
          ===================================================== -->
     <record id="view_wasabi_category_kanban" model="ir.ui.view">
         <field name="name">wasabi.category.kanban</field>
         <field name="model">wasabi.category</field>
         <field name="arch" type="xml">
-            <kanban class="o_wasabi_category_kanban" sample="1">
+            <kanban class="o_wasabi_category_kanban o_wasabi_cat_hub"
+                    create="false" group_create="false" sample="1">
                 <field name="id"/>
                 <field name="icon"/>
                 <field name="name"/>
                 <field name="menu_item_count"/>
                 <field name="is_active"/>
                 <field name="color"/>
+                <field name="description"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div t-attf-class="oe_kanban_card oe_kanban_global_click o_wasabi_cat_card #{kanban_color(record.color.raw_value)}">
-                            <div class="o_wasabi_cat_icon">
-                                <span t-esc="record.icon.raw_value or '🍽️'"/>
-                            </div>
-                            <div class="o_wasabi_cat_body">
-                                <strong><field name="name"/></strong>
-                                <div class="o_wasabi_cat_meta">
-                                    <field name="menu_item_count"/> menu
-                                    <span t-if="!record.is_active.raw_value" class="badge text-bg-secondary ms-2">Nonaktif</span>
+                        <div class="o_wasabi_cat_hub_card">
+                            <button name="action_view_menu_items" type="object"
+                                    class="o_wasabi_cat_hub_btn">
+                                <div class="o_wasabi_cat_hub_icon">
+                                    <span><t t-esc="record.icon.raw_value or '🍽️'"/></span>
                                 </div>
-                            </div>
-                            <div class="o_wasabi_cat_action">
-                                <button name="action_view_menu_items" type="object" class="btn btn-link btn-sm">
-                                    Lihat menu →
-                                </button>
-                            </div>
+                                <div class="o_wasabi_cat_hub_label">
+                                    <strong><t t-esc="record.name.raw_value"/></strong>
+                                    <small>
+                                        <t t-if="record.menu_item_count.raw_value > 0">
+                                            <t t-esc="record.menu_item_count.raw_value"/> item
+                                        </t>
+                                        <t t-else="">Semua menu</t>
+                                    </small>
+                                </div>
+                                <span class="o_wasabi_cat_hub_arrow">→</span>
+                            </button>
                         </div>
                     </t>
                 </templates>
@@ -99,13 +102,15 @@
          CATEGORY — Action
          ===================================================== -->
     <record id="action_wasabi_category" model="ir.actions.act_window">
-        <field name="name">Kategori Menu</field>
+        <field name="name">Menu &amp; Stok</field>
         <field name="res_model">wasabi.category</field>
         <field name="view_mode">kanban,tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_wasabi_category_kanban')}),
+            (0, 0, {'view_mode': 'tree',   'view_id': ref('view_wasabi_category_tree')}),
+            (0, 0, {'view_mode': 'form',   'view_id': ref('view_wasabi_category_form')})]"/>
         <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Belum ada kategori menu
-            </p>
+            <p class="o_view_nocontent_smiling_face">Belum ada kategori menu</p>
             <p>Buat kategori untuk mengelompokkan menu (Sushi, Ramen, Bento, dll).</p>
         </field>
     </record>
