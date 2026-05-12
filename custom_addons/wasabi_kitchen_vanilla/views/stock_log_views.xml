@@ -14,22 +14,21 @@
                 <field name="after_qty"/>
                 <field name="delta"/>
                 <field name="delta_label"/>
-                <field name="staff_id"/>
                 <field name="order_id"/>
                 <field name="note"/>
                 <field name="create_date"/>
                 <templates>
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card o_wasabi_slog_card o_slog_#{record.delta.raw_value > 0 ? 'pos' : 'neg'}">
-                            <div class="o_wasabi_slog_indicator">
-                                <span t-attf-class="o_wasabi_slog_dot o_slog_dot_#{record.delta.raw_value > 0 ? 'pos' : 'neg'}"/>
-                                <span t-attf-class="o_wasabi_slog_delta o_slog_delta_#{record.delta.raw_value > 0 ? 'pos' : 'neg'}">
-                                    <t t-esc="record.delta_label.raw_value"/>
-                                </span>
-                            </div>
-                            <div class="o_wasabi_slog_menu">
-                                <strong><field name="menu_item_id"/></strong>
-                                <small class="o_wasabi_slog_cat"><field name="category_name"/></small>
+                            <div class="o_wasabi_slog_top">
+                                <div class="o_wasabi_slog_menu">
+                                    <strong><field name="menu_item_id"/></strong>
+                                    <small class="o_wasabi_slog_cat"><field name="category_name"/></small>
+                                </div>
+                                <div t-attf-class="o_wasabi_slog_chip o_slog_chip_#{record.delta.raw_value > 0 ? 'pos' : 'neg'}">
+                                    <span t-attf-class="o_wasabi_slog_chip_dot o_slog_chip_dot_#{record.delta.raw_value > 0 ? 'pos' : 'neg'}"/>
+                                    <span><t t-esc="record.delta_label.raw_value"/></span>
+                                </div>
                             </div>
                             <div class="o_wasabi_slog_qty">
                                 <span class="o_wasabi_slog_before"><t t-esc="record.before_qty.raw_value"/></span>
@@ -38,9 +37,6 @@
                             </div>
                             <div class="o_wasabi_slog_meta">
                                 <field name="reason" widget="badge"/>
-                                <span t-if="record.staff_id.raw_value" class="o_wasabi_slog_staff">
-                                    · <field name="staff_id"/>
-                                </span>
                             </div>
                             <div class="o_wasabi_slog_footer">
                                 <small><field name="create_date"/></small>
@@ -70,7 +66,6 @@
                 <field name="delta" column_invisible="1"/>
                 <field name="delta_label" string="Δ"/>
                 <field name="after_qty"/>
-                <field name="staff_id"/>
                 <field name="order_id"/>
                 <field name="note"/>
             </tree>
@@ -86,7 +81,6 @@
                     <group>
                         <group>
                             <field name="menu_item_id"/>
-                            <field name="staff_id"/>
                             <field name="order_id"/>
                             <field name="reason"/>
                         </group>
@@ -110,7 +104,6 @@
         <field name="arch" type="xml">
             <search string="Cari Log">
                 <field name="menu_item_id"/>
-                <field name="staff_id"/>
                 <field name="reason"/>
                 <separator/>
                 <filter string="Auto-Decrement" name="filter_auto" domain="[('reason','=','auto_decrement')]"/>
@@ -120,7 +113,6 @@
                 <group expand="0" string="Group By">
                     <filter string="Menu" name="group_menu" context="{'group_by': 'menu_item_id'}"/>
                     <filter string="Alasan" name="group_reason" context="{'group_by': 'reason'}"/>
-                    <filter string="Staff" name="group_staff" context="{'group_by': 'staff_id'}"/>
                 </group>
             </search>
         </field>
