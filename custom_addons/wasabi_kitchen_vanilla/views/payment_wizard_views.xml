@@ -9,12 +9,6 @@
         <field name="model">wasabi.payment.wizard</field>
         <field name="arch" type="xml">
             <form string="Konfirmasi Pembayaran" class="o_wasabi_pay_form">
-                <header>
-                    <button name="action_confirm_payment" type="object"
-                            string="✓ Konfirmasi &amp; Tutup Transaksi"
-                            class="btn-primary btn-lg"/>
-                    <button special="cancel" string="Batal" class="btn-secondary"/>
-                </header>
                 <sheet>
                     <div class="o_wasabi_pay_head">
                         <div>
@@ -31,38 +25,44 @@
                         </div>
                     </div>
 
-                    <group>
-                        <group string="Pilih Metode Pembayaran" colspan="2">
-                            <field name="payment_method" widget="radio" nolabel="1" class="o_wasabi_pay_method"/>
-                        </group>
-                    </group>
+                    <separator string="Pilih Metode Pembayaran"/>
+                    <field name="payment_method" widget="radio" nolabel="1" class="o_wasabi_pay_method"/>
 
                     <group invisible="payment_method != 'cash'">
                         <group string="Detail Pembayaran Tunai">
-                            <field name="amount_received"
-                                   class="o_wasabi_pay_input"/>
-                            <field name="change_amount" readonly="1"
-                                   class="o_wasabi_pay_change"/>
+                            <field name="amount_received" class="o_wasabi_pay_input"/>
+                            <field name="change_amount" readonly="1" class="o_wasabi_pay_change"/>
                         </group>
                         <group string="Quick Amount">
-                            <button name="set_quick_50k" type="object" string="50.000" class="btn-sm btn-light"/>
-                            <button name="set_quick_100k" type="object" string="100.000" class="btn-sm btn-light"/>
-                            <button name="set_quick_200k" type="object" string="200.000" class="btn-sm btn-light"/>
+                            <button name="set_quick_50k"   type="object" string="50.000"   class="btn-sm btn-light"/>
+                            <button name="set_quick_100k"  type="object" string="100.000"  class="btn-sm btn-light"/>
+                            <button name="set_quick_200k"  type="object" string="200.000"  class="btn-sm btn-light"/>
                             <button name="set_quick_exact" type="object" string="Uang Pas" class="btn-sm btn-light"/>
                         </group>
                     </group>
 
                     <group invisible="payment_method != 'qris'">
-                        <div class="o_wasabi_qris_panel">
-                            <div class="o_wasabi_label">Tunjukkan QR ke pelanggan</div>
-                            <div class="o_wasabi_qris_mock"></div>
-                            <div class="o_wasabi_qris_amount">
-                                <field name="total_amount" readonly="1" nolabel="1" widget="monetary"/>
+                        <group string="QR Code">
+                            <field name="qris_qr_image" widget="image" nolabel="1"
+                                   class="o_wasabi_qris_img" readonly="1"
+                                   options="{'size': [200, 200]}"/>
+                        </group>
+                        <group string="Detail QRIS">
+                            <div class="o_wasabi_qris_info">
+                                <div class="o_wasabi_label" style="margin-bottom:8px;">Tunjukkan QR ke pelanggan</div>
+                                <div class="o_wasabi_qris_amount">
+                                    <field name="total_amount" readonly="1" nolabel="1" widget="monetary"/>
+                                </div>
+                                <div class="o_wasabi_qris_providers" style="margin-top:12px;">
+                                    QRIS · GoPay · OVO · DANA · ShopeePay · LinkAja
+                                </div>
+                                <div style="margin-top:16px; font-size:12px; color:#6c7079; line-height:1.6;">
+                                    1. Buka aplikasi e-wallet pelanggan<br/>
+                                    2. Scan QR Code di sebelah kiri<br/>
+                                    3. Konfirmasi setelah pembayaran berhasil
+                                </div>
                             </div>
-                            <div class="o_wasabi_qris_providers">
-                                QRIS · GoPay · OVO · DANA · ShopeePay · LinkAja
-                            </div>
-                        </div>
+                        </group>
                     </group>
 
                     <separator string="Catatan"/>
@@ -71,6 +71,12 @@
                     <field name="order_id" invisible="1"/>
                     <field name="currency_id" invisible="1"/>
                 </sheet>
+                <footer>
+                    <button name="action_confirm_payment" type="object"
+                            string="Konfirmasi &amp; Tutup Transaksi"
+                            class="btn-primary"/>
+                    <button special="cancel" string="Batal" class="btn-secondary"/>
+                </footer>
             </form>
         </field>
     </record>

@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import base64
+from io import BytesIO
+
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -39,6 +42,53 @@ class WasabiPaymentWizard(models.TransientModel):
         currency_field='currency_id',
     )
     notes = fields.Text(string='Catatan')
+
+    qris_qr_image = fields.Binary(
+        string='QR Code QRIS',
+        compute='_compute_qris_qr',
+    )
+
+    @api.depends('total_amount', 'order_id')
+    def _compute_qris_qr(self):
+        try:
+            import qrcode  # noqa: PLC0415
+        except ImportError:
+            for rec in self:
+                rec.qris_qr_image = False
+            return
+        for rec in self:
+            amount_int = int(rec.total_amount or 0)
+            amount_str = str(amount_int)
+            # Mock QRIS EMVCo string — merchant ID placeholder, real format
+            qris_payload = (
+                "00020101021226600014ID.CO.QRIS.WWW"
+                "011893600009150001234500"
+                "021500000000000000001"
+                "0303UBE"
+                "52044812"
+                "5303360"
+                f"54{len(amount_str):02d}{amount_str}"
+                "5802ID"
+                "5914Wasabi Kitchen"
+                "6015Jatinangor IDN"
+                f"62{len(rec.order_id.order_number or '') + 4:02d}"
+                f"0508{rec.order_id.order_number or 'DEMO'}"
+            )
+            try:
+                qr = qrcode.QRCode(
+                    version=None,
+                    error_correction=qrcode.constants.ERROR_CORRECT_M,
+                    box_size=8,
+                    border=3,
+                )
+                qr.add_data(qris_payload)
+                qr.make(fit=True)
+                img = qr.make_image(fill_color='#1f1d24', back_color='white')
+                buf = BytesIO()
+                img.save(buf, format='PNG')
+                rec.qris_qr_image = base64.b64encode(buf.getvalue())
+            except Exception:
+                rec.qris_qr_image = False
 
     @api.depends('amount_received', 'total_amount', 'payment_method')
     def _compute_change(self):
