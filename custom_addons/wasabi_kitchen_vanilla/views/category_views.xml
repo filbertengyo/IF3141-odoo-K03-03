@@ -36,7 +36,7 @@
                 <field name="description"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="o_wasabi_cat_hub_card">
+                        <div class="oe_kanban_card o_wasabi_cat_hub_card">
                             <button name="action_view_menu_items" type="object"
                                     class="o_wasabi_cat_hub_btn">
                                 <div class="o_wasabi_cat_hub_icon">
