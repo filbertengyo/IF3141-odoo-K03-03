@@ -33,6 +33,14 @@
     background: linear-gradient(135deg, #fff, #fffbeb);
     border-color: #fde68a;
 }
+.o_wasabi_billing_kanban .o_wasabi_bill_tile.o_status_paid {
+    background: linear-gradient(135deg, #fff, #f3f4f6);
+    border-color: #d1d5db;
+}
+.o_wasabi_billing_kanban .o_wasabi_bill_tile.o_status_cancelled {
+    background: linear-gradient(135deg, #fff, #fee2e2);
+    border-color: #fca5a5;
+}
 
 .o_wasabi_ribbon {
     position: absolute;
@@ -45,6 +53,14 @@
     border-bottom-left-radius: 8px;
     text-transform: uppercase;
     letter-spacing: .06em;
+}
+.o_wasabi_ribbon.o_ribbon_paid {
+    background: #9ca3af;
+    color: #fff;
+}
+.o_wasabi_ribbon.o_ribbon_cancelled {
+    background: #b91c1c;
+    color: #fff;
 }
 
 .o_wasabi_billing_kanban .o_wasabi_bill_eyebrow {
@@ -332,19 +348,19 @@
     padding: 24px;
     margin-top: 12px;
 }
-.o_wasabi_qris_mock {
-    width: 200px; height: 200px;
-    margin: 16px auto;
-    background:
-      linear-gradient(45deg, #1f1d24 25%, transparent 25%),
-      linear-gradient(-45deg, #1f1d24 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #1f1d24 75%),
-      linear-gradient(-45deg, transparent 75%, #1f1d24 75%);
-    background-size: 14px 14px;
-    background-position: 0 0, 0 7px, 7px -7px, -7px 0;
+.o_wasabi_qris_img {
+    margin: 8px 0;
+}
+.o_wasabi_qris_img img,
+.o_wasabi_qris_img .o_field_image img {
+    width: 180px;
+    height: 180px;
     border-radius: 8px;
-    border: 8px solid #fff;
+    border: 6px solid #fff;
     box-shadow: var(--wk-shadow-md);
+    object-fit: contain;
+    background: #fff;
+    display: block;
 }
 .o_wasabi_qris_amount {
     font-family: 'JetBrains Mono', monospace;

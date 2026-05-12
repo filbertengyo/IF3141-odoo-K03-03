@@ -210,6 +210,20 @@
 .o_status_pill_cooking   .o_dot { background: #2563eb; }
 .o_status_pill_ready     { background: #dcfce7; color: #14532d; }
 .o_status_pill_ready     .o_dot { background: #16a34a; }
+.o_status_pill_paid      { background: #f3f4f6; color: #374151; }
+.o_status_pill_cancelled { background: #fee2e2; color: #991b1b; }
+.o_status_pill_cancelled .o_cancel_x {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: #ef4444;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+}
 
 /* =============================================================
    EXPORT WIZARD

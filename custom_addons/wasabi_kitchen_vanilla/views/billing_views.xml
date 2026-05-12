@@ -27,6 +27,8 @@
                     <t t-name="kanban-box">
                         <div t-attf-class="oe_kanban_card oe_kanban_global_click o_wasabi_bill_tile o_status_#{record.status.raw_value}">
                             <div t-if="record.status.raw_value == 'ready'" class="o_wasabi_ribbon">SIAP BAYAR</div>
+                            <div t-if="record.status.raw_value == 'paid'" class="o_wasabi_ribbon o_ribbon_paid">LUNAS</div>
+                            <div t-if="record.status.raw_value == 'cancelled'" class="o_wasabi_ribbon o_ribbon_cancelled">BATAL</div>
                             <div class="o_wasabi_bill_eyebrow">Table</div>
                             <div class="o_wasabi_bill_num">
                                 <t t-esc="record.table_number.raw_value &lt; 10 ? '0' + record.table_number.raw_value : record.table_number.raw_value"/>
@@ -36,6 +38,8 @@
                                     <t t-if="record.status.raw_value == 'pending'">⏳ Pending</t>
                                     <t t-if="record.status.raw_value == 'cooking'">🔥 Cooking</t>
                                     <t t-if="record.status.raw_value == 'ready'">✓ Ready</t>
+                                    <t t-if="record.status.raw_value == 'paid'">💳 Paid</t>
+                                    <t t-if="record.status.raw_value == 'cancelled'"><span class="o_cancel_x">✕</span> Cancelled</t>
                                 </span>
                             </div>
 
@@ -51,6 +55,16 @@
                                     name="action_open_billing" type="object"
                                     class="btn btn-sm btn-primary o_wasabi_bill_btn">
                                 🧾 Buka Billing
+                            </button>
+                            <button t-if="record.status.raw_value == 'paid'"
+                                    name="action_open_billing" type="object"
+                                    class="btn btn-sm btn-primary o_wasabi_bill_btn">
+                                Details
+                            </button>
+                            <button t-if="record.status.raw_value == 'cancelled'"
+                                    name="action_open_billing" type="object"
+                                    class="btn btn-sm btn-primary o_wasabi_bill_btn">
+                                Details
                             </button>
                         </div>
                     </t>
@@ -70,7 +84,7 @@
             (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_wasabi_billing_kanban')}),
             (0, 0, {'view_mode': 'tree',   'view_id': ref('view_wasabi_order_tree')}),
             (0, 0, {'view_mode': 'form',   'view_id': ref('view_wasabi_order_billing_form')})]"/>
-        <field name="domain">[('status','in',('pending','cooking','ready'))]</field>
+        <field name="domain">[]</field>
         <field name="search_view_id" ref="view_wasabi_order_search"/>
         <field name="context">{}</field>
         <field name="help" type="html">
