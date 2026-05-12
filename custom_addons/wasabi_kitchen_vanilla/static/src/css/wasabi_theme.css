@@ -214,7 +214,8 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 16px;
     padding: 16px;
-    align-items: stretch;
+    align-items: start;
+    align-content: start;
 }
 /* inside a group column */
 .o_wasabi_stock_kanban .o_kanban_group .o_kanban_records_wrapper {
@@ -222,10 +223,17 @@
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 12px;
     padding: 8px 0;
+    align-items: start;
+    align-content: start;
 }
 .o_wasabi_stock_kanban .o_kanban_record {
     margin: 0 !important;
-    height: 100%;
+    height: auto !important;
+    align-self: start;
+}
+.o_wasabi_stock_kanban .o_kanban_group {
+    min-width: 180px;
+    max-width: 260px;
 }
 
 .o_wasabi_stock_kanban .o_wasabi_sc_card {
@@ -238,7 +246,7 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    height: 100%;
+    height: auto;
 }
 .o_wasabi_stock_kanban .o_wasabi_sc_card:hover {
     transform: translateY(-2px);
@@ -257,7 +265,7 @@
 
 .o_wasabi_sc_body {
     padding: 10px 12px 8px;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
 }
 .o_wasabi_sc_name strong {
     font-size: 14px;
